@@ -8,7 +8,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>23</maven.compiler.release>
-        <exec.mainClass>com.penguinpush.cullergrader.Cullergrader</exec.mainClass>
+        <exec.mainClass>com.penguinpush.cullergrader.Main</exec.mainClass>
     </properties>
     <dependencies>
         <dependency>
