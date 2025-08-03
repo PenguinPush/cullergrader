@@ -1,6 +1,7 @@
 package com.penguinpush.cullergrader.config;
 
 public class DefaultAppConstants {
+    public String CACHE_DIRECTORY = "cullergrader/cache.json";
     public boolean HASHING_ENABLED = true;
     public int EXECUTOR_TIMEOUT_MINUTES = 60;
     public int MAX_THREADS_RATIO = 2;

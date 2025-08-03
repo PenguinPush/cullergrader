@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HashManager {
 
-    private static final File CACHE_FILE = new File("hashes.json");
+    private static final File CACHE_FILE = new File(AppConstants.CACHE_DIRECTORY);
     private final Map<String, HashEntry> cache = new HashMap<>();
 
     public HashManager() {

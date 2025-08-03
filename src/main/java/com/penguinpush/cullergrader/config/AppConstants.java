@@ -22,6 +22,7 @@ public class AppConstants {
         config = loaded;
     }
 
+    public static final String CACHE_DIRECTORY = config.CACHE_DIRECTORY;
     public static final boolean HASHING_ENABLED = config.HASHING_ENABLED;
     public static final int EXECUTOR_TIMEOUT_MINUTES = config.EXECUTOR_TIMEOUT_MINUTES;
     public static final int MAX_THREADS_RATIO = config.MAX_THREADS_RATIO;
