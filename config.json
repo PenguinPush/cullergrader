@@ -1,4 +1,5 @@
 {
+    "CACHE_DIRECTORY": "cullergrader/hashes.json"
     "HASHING_ENABLED": true,
     "EXECUTOR_TIMEOUT_MINUTES": 60,
     "MAX_THREADS_RATIO": 2,
@@ -6,5 +7,4 @@
     "HASHED_HEIGHT": 8,
     "TIME_THRESHOLD_MS": 6000,
     "HASH_DISTANCE_THRESHOLD": 80,
-    "CACHE_DIRECTORY": "cullergrader/hashes.json"
 }
