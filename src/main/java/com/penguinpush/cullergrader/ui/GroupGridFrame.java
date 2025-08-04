@@ -82,8 +82,6 @@ public class GroupGridFrame extends JFrame {
 
     public static void setInfoText(String infoText) {
         instance.jInfoTextLabel.setText(infoText);
-        instance.jInfoTextLabel.repaint();
-        instance.jInfoTextLabel.revalidate();
     }
 
     public static void initializeLoggerCallback() {
