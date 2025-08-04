@@ -41,7 +41,7 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 - Extra information about images availible on hover
 - Runs completely offline, and never connects to the internet
 - Logs information to .txt files
-- Light/Dark themes
+- Light/Dark themes from FlatLaf
 - Configurable:
     - Multithreading
     - Hashing settings
