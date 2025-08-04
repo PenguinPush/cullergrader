@@ -2,7 +2,10 @@ package com.penguinpush.cullergrader.logic;
 
 import com.penguinpush.cullergrader.config.AppConstants;
 import com.penguinpush.cullergrader.media.*;
+
 import static com.penguinpush.cullergrader.utils.Logger.logMessage;
+
+import javax.swing.*;
 
 import java.util.*;
 import java.io.File;
@@ -17,6 +20,7 @@ public class GroupingEngine {
 
         HashManager hashManager = new HashManager();
         List<Photo> photoList = hashManager.hashAllPhotos(imageFiles);
+
         hashManager.saveCache();
 
         // sort first by timestamp, and then by file name
@@ -62,10 +66,6 @@ public class GroupingEngine {
 
             current.setMetrics(deltaTimeSeconds, hammingDistancePercent);
 
-            System.out.print("added " + current.getFile().getName() + " to group " + groups.size());
-            System.out.print(" " + deltaTimeSeconds + " " + hammingDistancePercent);
-            System.out.print("\n");
-
             logMessage("added " + current.getFile().getName() + " " + deltaTimeSeconds + " " + hammingDistancePercent + " to group " + groups.size());
         }
 
@@ -77,4 +77,5 @@ public class GroupingEngine {
 
         return groups;
     }
+
 }

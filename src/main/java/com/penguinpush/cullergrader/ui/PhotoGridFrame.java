@@ -89,7 +89,7 @@ public class PhotoGridFrame extends JFrame {
     private void setBestTake() {
         Photo photo = jImagePanel.getPhoto();
 
-        if (photoGroup.getIndex() < photoGroups.size() - 1) {
+        if (photoGroup.getIndex() <= photoGroups.size() - 1) {
             photoGroup.setBestTake(photo);
             groupGridFrame.setNeedsRefresh();
             repaint();

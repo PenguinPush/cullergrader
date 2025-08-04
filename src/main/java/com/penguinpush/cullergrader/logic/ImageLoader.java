@@ -15,7 +15,7 @@ public class ImageLoader {
     public ImageLoader() {
         taskQueue = new PriorityBlockingQueue<>();
         int maxThreads = Math.max(1, Runtime.getRuntime().availableProcessors() / AppConstants.MAX_THREADS_RATIO);
-        executor = Executors.newFixedThreadPool(maxThreads);
+        executor = Executors.newWorkStealingPool(maxThreads);
 
         for (int i = 0; i < maxThreads; i++) {
             executor.submit(this::processQueue);

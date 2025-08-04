@@ -4,6 +4,7 @@ import com.penguinpush.cullergrader.media.Photo;
 import com.penguinpush.cullergrader.media.PhotoGroup;
 import static com.penguinpush.cullergrader.utils.Logger.logMessage;
 
+import javax.swing.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,10 +33,8 @@ public class FileUtils {
 
                 try {
                     Files.copy(sourceFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    System.out.println("copied file: " + sourceFile.getAbsolutePath());
                     logMessage("copied file: " + sourceFile.getAbsolutePath());
                 } catch (IOException e) {
-                    System.err.println("couldn't copy file: " + sourceFile.getAbsolutePath());
                     logMessage("couldn't copy file: " + sourceFile.getAbsolutePath());
                 }
             }

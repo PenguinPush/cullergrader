@@ -47,6 +47,8 @@ public class Logger {
                 logCallback.accept(message);
             }
 
+            System.out.println(message);
+
         } catch (IOException e) {
             System.err.println("an error occurred... ironically, there's nowhere to log this:  " + e.getMessage());
         }

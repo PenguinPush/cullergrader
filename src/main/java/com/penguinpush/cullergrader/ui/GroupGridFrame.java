@@ -8,9 +8,6 @@ import com.penguinpush.cullergrader.utils.Logger;
 import javax.swing.*;
 import java.util.List;
 import java.io.File;
-import java.util.Objects;
-
-import static com.penguinpush.cullergrader.utils.Logger.logMessage;
 
 public class GroupGridFrame extends JFrame {
 
@@ -40,10 +37,15 @@ public class GroupGridFrame extends JFrame {
         int height = AppConstants.GRIDMEDIA_PHOTO_HEIGHT;
 
         this.photoGroups = photoGroups;
+
+        if (photoGridFrame != null) {
+            photoGridFrame.dispose();
+        }
         photoGridFrame = new PhotoGridFrame(photoGroups, this, imageLoader);
 
         jGridPanel.populateGrid((List<GridMedia>) (List<? extends GridMedia>) photoGroups, width, height, AppConstants.GROUP_OFFSCREEN_PRIORITY);
         jGridPanel.refreshGrid(); // refresh grid again, because i guess the one inside populateGrid() doesn't call...
+
 
         jReloadButton.setEnabled(true);
     }
@@ -80,6 +82,8 @@ public class GroupGridFrame extends JFrame {
 
     public static void setInfoText(String infoText) {
         instance.jInfoTextLabel.setText(infoText);
+        instance.jInfoTextLabel.repaint();
+        instance.jInfoTextLabel.revalidate();
     }
 
     public static void initializeLoggerCallback() {
@@ -213,7 +217,7 @@ public class GroupGridFrame extends JFrame {
     }//GEN-LAST:event_jMenuItemExportActionPerformed
 
     private void jMenuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenActionPerformed
-        JFileChooser chooser = new JFileChooser(Objects.requireNonNullElseGet(importDirectory, () -> new File(AppConstants.DEFAULT_FOLDER_PATH)));
+        JFileChooser chooser = new JFileChooser(importDirectory != null ? importDirectory : new File(AppConstants.DEFAULT_FOLDER_PATH));
         chooser.setDialogTitle("Open Folder...");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);

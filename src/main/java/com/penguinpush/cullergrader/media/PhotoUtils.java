@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.*;
 import javax.imageio.*;
 import javax.imageio.stream.ImageInputStream;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 public class PhotoUtils {
 
@@ -57,7 +57,6 @@ public class PhotoUtils {
                 }
             }
         } catch (Exception e) {
-            System.out.println("couldn't find exif for: " + file.getName() + ", defaulting to last modified");
             logMessage("couldn't find exif for: " + file.getName() + ", defaulting to last modified");
         }
 

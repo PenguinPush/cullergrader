@@ -73,7 +73,8 @@ public class JGridPanel extends JPanel {
         Rectangle visibleRect = gridPanel.getVisibleRect();
 
         for (Component component : gridPanel.getComponents()) {
-            if (component instanceof JGridMedia jGridMedia) {
+            if (component instanceof JGridMedia) {
+                JGridMedia jGridMedia = (JGridMedia) component;
                 Rectangle mediaBounds = jGridMedia.getBounds();
 
                 int priority;
@@ -83,9 +84,11 @@ public class JGridPanel extends JPanel {
                     priority = OFFSCREEN_PRIORITY;
                 }
 
-                if (jGridMedia.gridMedia instanceof Photo photo) {
+                if (jGridMedia.gridMedia instanceof Photo) {
+                    Photo photo = (Photo) jGridMedia.gridMedia;
                     imageLoader.updatePriority(photo, priority);
-                } else if (jGridMedia.gridMedia instanceof PhotoGroup photoGroup) {
+                } else if (jGridMedia.gridMedia instanceof PhotoGroup) {
+                    PhotoGroup photoGroup = (PhotoGroup) jGridMedia.gridMedia;
                     imageLoader.updatePriority(photoGroup.getBestTake(), priority);
                 }
             }
