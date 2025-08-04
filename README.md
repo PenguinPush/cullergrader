@@ -7,15 +7,9 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 
 <sub>* grading photos has yet to be implemented...</sub>
 
-<div style="display: flex; justify-content: center; align-items: center;">
-  <figure style="margin: 0 10px;">
+<div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
     <img src="images/exampleA.JPG" alt="DSC07442.JPG" width="300"/>
-    <figcaption>DSC07442.JPG</figcaption>
-  </figure>
-  <figure style="margin: 0 10px;">
     <img src="images/exampleB.JPG" alt="DSC07443.JPG" width="300"/>
-    <figcaption>DSC07443.JPG</figcaption>
-  </figure>
 </div>
 <p align="center">For example: Cullergrader would mark these two images as "similar" (at similarity threshold >= 37%)</p>
 
@@ -53,7 +47,7 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 
 
 ## Installation
-Cullergrader requires a Java 8 JRE or newer to run, a prebuilt executable .jar with all required libraries bundled is available for download at [github.com/PenguinPush/cullergrader/releases](https://github.com/PenguinPush/cullergrader/releases). Extract the .zip to any folder and run the .jar to begin using Cullergrader.
+Cullergrader requires a Java 8 JRE or newer to run, a prebuilt executable .jar with all required libraries bundled is available for download at [github.com/PenguinPush/cullergrader/releases](https://github.com/PenguinPush/cullergrader/releases). Extract the .zip to any folder and run the .jar to begin using Cullergrader. If you want to view logs in console, please use `run.bat` or `run.sh` depending on your operating system; **using console is highly recommended for large batches of images (or on slow drives), as there is no other way to monitor slow hashing progress!**
 
 Compiling from source code can be done with:
 ```
@@ -87,4 +81,35 @@ Best takes can be exported to a folder using `File > Export Best Takes` or with 
 ![images/export_to.png](images/export_to.png)
 
 ## Config
+Default config:
+```json
+{
+    "DARK_THEME": true,
+    "CACHE_FILE": "hashes.json",
+    "LOG_DIRECTORY": "logs",
+    "DEFAULT_FOLDER_PATH": "",
+    "HASHING_ENABLED": true,
+    "EXECUTOR_TIMEOUT_MINUTES": 60,
+    "MAX_THREADS_RATIO": 2,
+    "HASHED_WIDTH": 8,
+    "HASHED_HEIGHT": 8,
+    "TIME_THRESHOLD_SECONDS": 15,
+    "SIMILARITY_THRESHOLD_PERCENT": 45
+}
+```
 
+| Setting                        | Description                                                                                                                                                                                                                                | Variable Type |
+|--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| `DARK_THEME`                   | Toggles the dark and light FlatLaf themes. On by default (obviously)                                                                                                                                                                       | `boolean`     |
+| `CACHE_FILE`                   | The name of the *file* used to store hash caches. Passed as a pathname in a File constructor                                                                                                                                               | `String`      |
+| `LOG_DIRECTORY`                | The name of the *folder* used to store logs. Passed as a pathname in a File constructor                                                                                                                                                    | `String`      |
+| `DEFAULT_FOLDER_PATH`          | The default folder opened when importing images. Passed as a pathname in a File constructor. When empty, uses the systems `user.home` property                                                                                             | `String`      |
+| `HASHING_ENABLED`              | Whether or not hashing is used in grouping photos                                                                                                                                                                                          | `boolean`     |
+| `EXECUTOR_TIMEOUT_MINUTES`     | The amount of time, in minutes, before the hash manager times out and stops hashing photos                                                                                                                                                 | `int`         |
+| `MAX_THREADS_RATIO`            | The fraction of CPU threads the hasher is allowed to multithread. 2 means half your threads, 3 means a third, etc.                                                                                                                         | `int`         |
+| `HASHED_WIDTH`                 | The width that images are computed at before hashing, higher values mean more accurate similarity checks at the cost of performance                                                                                                        | `int`         |
+| `HASHED_HEIGHT`                | The height that images are computed at before hashing, higher values mean more accurate similarity checks at the cost of performance                                                                                                       | `int`         |
+| `TIME_THRESHOLD_SECONDS`       | The default amount of seconds between photos (from the timestamp) before they're counted as a new group. Editable in-app, but will not change the default stored here                                                                      | `float`       |
+| `SIMILARITY_THRESHOLD_PERCENT` | The default similarity between two photo hashes before they're counted as a new group. Higher values means more lenience in image similarity (larger groups, less in number). Editable in-app, but will not change the default stored here | `float`       |
+
+Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_SET_BESTTAKE`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editagble by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended. 

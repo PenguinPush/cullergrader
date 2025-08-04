@@ -24,8 +24,10 @@ public class AppConstants {
     }
 
     public static final boolean DARK_THEME = config.DARK_THEME;
-    public static final String CACHE_DIRECTORY = config.CACHE_DIRECTORY;
+    public static final String CACHE_FILE = config.CACHE_FILE;
     public static final String LOG_DIRECTORY = config.LOG_DIRECTORY;
+    public static final String DEFAULT_FOLDER_PATH = config.DEFAULT_FOLDER_PATH;
+
     public static final boolean HASHING_ENABLED = config.HASHING_ENABLED;
     public static final int EXECUTOR_TIMEOUT_MINUTES = config.EXECUTOR_TIMEOUT_MINUTES;
     public static final int MAX_THREADS_RATIO = config.MAX_THREADS_RATIO;
@@ -53,7 +55,6 @@ public class AppConstants {
 
     public static final int SCROLL_BAR_INCREMENT = config.SCROLL_BAR_INCREMENT;
     public static final String PLACEHOLDER_THUMBNAIL_PATH = config.PLACEHOLDER_THUMBNAIL_PATH;
-    public static final String DEFAULT_FOLDER_PATH = config.DEFAULT_FOLDER_PATH;
 
     public static final float GRIDMEDIA_LABEL_FONT_SIZE = config.GRIDMEDIA_LABEL_FONT_SIZE;
     public static final int GRIDMEDIA_LABEL_HEIGHT = config.GRIDMEDIA_LABEL_HEIGHT;

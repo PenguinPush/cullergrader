@@ -1,6 +1,8 @@
 {
     "DARK_THEME": true,
-    "CACHE_DIRECTORY": "hashes.json",
+    "CACHE_FILE": "hashes.json",
+    "LOG_DIRECTORY": "logs",
+    "DEFAULT_FOLDER_PATH": "",
     "HASHING_ENABLED": true,
     "EXECUTOR_TIMEOUT_MINUTES": 60,
     "MAX_THREADS_RATIO": 2,

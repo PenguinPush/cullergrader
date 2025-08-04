@@ -193,7 +193,7 @@ public class GroupGridFrame extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItemExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExportActionPerformed
-        JFileChooser chooser = new JFileChooser(AppConstants.DEFAULT_FOLDER_PATH);
+        JFileChooser chooser = new JFileChooser(importDirectory != null ? importDirectory : new File(AppConstants.DEFAULT_FOLDER_PATH));
         chooser.setDialogTitle("Export To...");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);
