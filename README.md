@@ -38,7 +38,7 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 - Runs on Windows, Mac, Linux, and anything else that supports Java GUIs
 - Blazingly-fast thanks to configurable multithreading support
 - Caches images -- future scans should be incredibly fast!
-- Extra information about images availible on hover
+- Extra information about images available on hover
 - Runs completely offline, and never connects to the internet
 - Logs information to .txt files
 - Light/Dark themes from FlatLaf
@@ -56,7 +56,7 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 
 ### Prebuilt Executable
 1. Cullergrader requires a Java 8 JRE or newer to run
-2. A prebuilt executable `.jar` with all libraries bundled is availible for downloade at [GitHub Releases](https://github.com/PenguinPush/cullergrader/releases)
+2. A prebuilt executable `.jar` with all libraries bundled is available for download at [GitHub Releases](https://github.com/PenguinPush/cullergrader/releases)
 3. Extract the `.zip` file to any folder and run `cullergrader-<version>.jar` file to begin using Cullergrader
 
 **Note**:
