@@ -1,5 +1,7 @@
 package com.penguinpush.cullergrader.media;
 
+import static com.penguinpush.cullergrader.utils.Logger.logMessage;
+
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
@@ -56,6 +58,7 @@ public class PhotoUtils {
             }
         } catch (Exception e) {
             System.out.println("couldn't find exif for: " + file.getName() + ", defaulting to last modified");
+            logMessage("couldn't find exif for: " + file.getName() + ", defaulting to last modified");
         }
 
         return file.lastModified(); // fallback

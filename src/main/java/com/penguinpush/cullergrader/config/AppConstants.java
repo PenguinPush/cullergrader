@@ -16,20 +16,23 @@ public class AppConstants {
             Gson gson = new GsonBuilder().create();
             loaded = gson.fromJson(new FileReader("config.json"), DefaultAppConstants.class);
             System.out.println("loaded config.json");
+
         } catch (IOException e) {
             System.err.println("couldn't load config, using default values");
         }
         config = loaded;
     }
 
+    public static final boolean DARK_THEME = config.DARK_THEME;
     public static final String CACHE_DIRECTORY = config.CACHE_DIRECTORY;
+    public static final String LOG_DIRECTORY = config.LOG_DIRECTORY;
     public static final boolean HASHING_ENABLED = config.HASHING_ENABLED;
     public static final int EXECUTOR_TIMEOUT_MINUTES = config.EXECUTOR_TIMEOUT_MINUTES;
     public static final int MAX_THREADS_RATIO = config.MAX_THREADS_RATIO;
     public static final int HASHED_WIDTH = config.HASHED_WIDTH;
     public static final int HASHED_HEIGHT = config.HASHED_HEIGHT;
-    public static final long TIME_THRESHOLD_MS = config.TIME_THRESHOLD_MS;
-    public static final int HASH_DISTANCE_THRESHOLD = config.HASH_DISTANCE_THRESHOLD;
+    public static final float TIME_THRESHOLD_SECONDS = config.TIME_THRESHOLD_SECONDS;
+    public static final float SIMILARITY_THRESHOLD_PERCENT = config.SIMILARITY_THRESHOLD_PERCENT;
 
     public static final int MAX_PRIORITY = config.MAX_PRIORITY;
     public static final int IMAGE_PRIORITY = config.IMAGE_PRIORITY;

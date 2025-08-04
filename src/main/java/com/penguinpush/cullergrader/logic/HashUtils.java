@@ -7,7 +7,7 @@ import java.util.*;
 
 public class HashUtils {
     public static String computeChanneledAverageHash(BufferedImage image) {
-        // computes the appended hash of three lab channels, returns string size width * height * 3
+        // computes the appended hash of three hsv channels, returns string size width * height * 3
         // only ever takes already scaled input
         float[][][] channels = splitToChannels(image);
 

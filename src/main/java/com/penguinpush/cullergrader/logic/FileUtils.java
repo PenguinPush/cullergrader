@@ -2,19 +2,21 @@ package com.penguinpush.cullergrader.logic;
 
 import com.penguinpush.cullergrader.media.Photo;
 import com.penguinpush.cullergrader.media.PhotoGroup;
+import static com.penguinpush.cullergrader.utils.Logger.logMessage;
+
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 public class FileUtils {
-    public static List<PhotoGroup> loadFolder(File path, GroupingEngine groupingEngine) {
+
+    public static List<PhotoGroup> loadFolder(File path, GroupingEngine groupingEngine, float timestampThreshold, float similarityThreshold) {
         List<Photo> photos = groupingEngine.photoListFromFolder(path);
 
-        return groupingEngine.generateGroups(photos);
+        return groupingEngine.generateGroups(photos, timestampThreshold, similarityThreshold);
     }
 
     public static void exportBestTakes(List<PhotoGroup> photoGroups, File targetFolder) {
@@ -31,8 +33,10 @@ public class FileUtils {
                 try {
                     Files.copy(sourceFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     System.out.println("copied file: " + sourceFile.getAbsolutePath());
+                    logMessage("copied file: " + sourceFile.getAbsolutePath());
                 } catch (IOException e) {
                     System.err.println("couldn't copy file: " + sourceFile.getAbsolutePath());
+                    logMessage("couldn't copy file: " + sourceFile.getAbsolutePath());
                 }
             }
         }

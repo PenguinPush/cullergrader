@@ -1,6 +1,7 @@
 package com.penguinpush.cullergrader.media;
 
 import com.penguinpush.cullergrader.config.AppConstants;
+import static com.penguinpush.cullergrader.utils.Logger.logMessage;
 
 import java.io.File;
 import java.awt.image.BufferedImage;
@@ -63,12 +64,14 @@ public class Photo extends GridMedia {
             BufferedImage thumbnail = PhotoUtils.readLowResImage(file, width, height);
             if (thumbnail == null) {
                 System.out.println("no thumbnail at: " + file.getName());
+                logMessage("no thumbnail at: " + file.getName());
                 throw null;
             }
 
             return thumbnail;
         } catch (IOException e) {
             System.err.println("couldn't get thumbnail for: " + file.getName());
+            logMessage("couldn't get thumbnail for: " + file.getName());
             return null;
         }
     }

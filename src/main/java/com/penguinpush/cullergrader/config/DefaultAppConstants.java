@@ -1,14 +1,16 @@
 package com.penguinpush.cullergrader.config;
 
 public class DefaultAppConstants {
-    public String CACHE_DIRECTORY = "cullergrader/cache.json";
+    public boolean DARK_THEME = true;
+    public String CACHE_DIRECTORY = "cache.json";
+    public String LOG_DIRECTORY = "logs";
     public boolean HASHING_ENABLED = true;
     public int EXECUTOR_TIMEOUT_MINUTES = 60;
     public int MAX_THREADS_RATIO = 2;
     public int HASHED_WIDTH = 8;
     public int HASHED_HEIGHT = 8;
-    public long TIME_THRESHOLD_MS = 6000;
-    public int HASH_DISTANCE_THRESHOLD = 80;
+    public float TIME_THRESHOLD_SECONDS = 15;
+    public float SIMILARITY_THRESHOLD_PERCENT = 35;
 
     public int MAX_PRIORITY = 0;
     public int IMAGE_PRIORITY = 1;

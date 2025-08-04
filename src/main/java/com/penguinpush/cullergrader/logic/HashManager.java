@@ -4,6 +4,7 @@ import com.penguinpush.cullergrader.media.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.penguinpush.cullergrader.config.AppConstants;
+import static com.penguinpush.cullergrader.utils.Logger.logMessage;
 
 import java.awt.image.BufferedImage;
 
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
 
 public class HashManager {
 
@@ -46,6 +48,7 @@ public class HashManager {
                     photoList.add(photo);
                 } catch (Exception e) {
                     System.out.println("error processing: " + file.getName());
+                    logMessage("error processing: " + file.getName());
                 }
             });
         }
@@ -56,6 +59,7 @@ public class HashManager {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             System.err.println("thread interrupted: " + e.getMessage());
+            logMessage("thread interrupted: " + e.getMessage());
         }
 
         return photoList;
@@ -69,6 +73,7 @@ public class HashManager {
         if (entry != null && entry.lastModified == lastModified && entry.hash.length() == AppConstants.HASHED_WIDTH * AppConstants.HASHED_HEIGHT * 3) {
             // return the cached hash if entry not null, last modified dates line up, and hash length is unchanged
             System.out.println("file: " + file.getName() + ", retrieving hash: " + entry.hash);
+            logMessage("file: " + file.getName() + ", retrieving hash: " + entry.hash);
             return entry.hash;
         }
 
@@ -77,12 +82,14 @@ public class HashManager {
             BufferedImage image = PhotoUtils.readLowResImage(file, AppConstants.HASHED_WIDTH, AppConstants.HASHED_HEIGHT);
             if (image == null) {
                 System.out.println("no image at: " + file.getName());
+                logMessage("no image at: " + file.getName());
                 throw null;
             }
 
             String hash = HashUtils.computeChanneledAverageHash(image);
             cache.put(path, new HashEntry(lastModified, hash));
             System.out.println("file: " + file.getName() + ", sucessfully generated hash: " + hash);
+            logMessage("file: " + file.getName() + ", sucessfully generated hash: " + hash);
             return hash;
         } catch (Exception e) {
             return null;
@@ -114,6 +121,7 @@ public class HashManager {
         }
 
         System.out.println("successfully saved cache!");
+        logMessage("successfully saved cache!");
     }
 
     private static class HashEntry {

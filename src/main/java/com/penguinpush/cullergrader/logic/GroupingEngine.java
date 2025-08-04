@@ -2,6 +2,7 @@ package com.penguinpush.cullergrader.logic;
 
 import com.penguinpush.cullergrader.config.AppConstants;
 import com.penguinpush.cullergrader.media.*;
+import static com.penguinpush.cullergrader.utils.Logger.logMessage;
 
 import java.util.*;
 import java.io.File;
@@ -26,7 +27,7 @@ public class GroupingEngine {
         return photoList;
     }
 
-    public List<PhotoGroup> generateGroups(List<Photo> photoList) {
+    public List<PhotoGroup> generateGroups(List<Photo> photoList, float timestampThreshold, float similarityThreshold) {
         List<PhotoGroup> groups = new ArrayList<>();
         PhotoGroup currentGroup = new PhotoGroup();
 
@@ -43,8 +44,11 @@ public class GroupingEngine {
             long deltaTime = Math.abs(current.getTimestamp() - last.getTimestamp());
             int hammingDistance = HashUtils.hammingDistance(current.getHash(), last.getHash());
 
+            float deltaTimeSeconds = deltaTime / 1000;
+            float hammingDistancePercent = 100 * ((float) hammingDistance) / (AppConstants.HASHED_WIDTH * AppConstants.HASHED_HEIGHT * 3);
+            
             // add to the group if it's within time and hash thresholds, otherwise make a new one
-            if (deltaTime <= AppConstants.TIME_THRESHOLD_MS && hammingDistance <= AppConstants.HASH_DISTANCE_THRESHOLD) {
+            if (deltaTimeSeconds <= timestampThreshold && hammingDistancePercent <= similarityThreshold) {
                 current.setIndex(last.getIndex() + 1);
                 currentGroup.addPhoto(current);
             } else {
@@ -56,14 +60,13 @@ public class GroupingEngine {
                 currentGroup.addPhoto(current);
             }
 
-            float deltaTimeRatio = (float) deltaTime / AppConstants.TIME_THRESHOLD_MS;
-            float hammingDistanceRatio = (float) hammingDistance / AppConstants.HASH_DISTANCE_THRESHOLD;
-
-            current.setMetrics(deltaTimeRatio, hammingDistanceRatio);
+            current.setMetrics(deltaTimeSeconds, hammingDistancePercent);
 
             System.out.print("added " + current.getFile().getName() + " to group " + groups.size());
-            System.out.print(" " + deltaTimeRatio + " " + hammingDistanceRatio);
+            System.out.print(" " + deltaTimeSeconds + " " + hammingDistancePercent);
             System.out.print("\n");
+
+            logMessage("added " + current.getFile().getName() + " " + deltaTimeSeconds + " " + hammingDistancePercent + " to group " + groups.size());
         }
 
         // add the last group too
