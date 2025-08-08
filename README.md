@@ -1,7 +1,7 @@
 # Cullergrader
-**Cullergrader** is a simple Java GUI made for photographers that groups and exports images based on [**perceptual similarity**](https://en.wikipedia.org/wiki/Perceptual_hashing) (and timestamps), allowing users to select the best shots from each set of similar, consecutively taken photos.
+**Cullergrader** is a simple Java GUI made for photographers that groups and exports images based on <a href="https://en.wikipedia.org/wiki/Perceptual_hashing" target="_blank">**perceptual similarity**</a> (and timestamps), allowing users to select the best shots from each set of similar, consecutively taken photos.
 
-Like many photographers, I have the habit of taking the same shot multiple times and selecting the best one to keep. However, when going through thousands of photos, this process of culling images is time-consuming, and tools such as [**Czkawka**](https://github.com/qarmin/czkawka) (a large inspiration for this project) can detect a few _very similar_ images, but don't group _somewhat similar_ bursts.
+Like many photographers, I have the habit of taking the same shot multiple times and selecting the best one to keep. However, when going through thousands of photos, this process of culling images is time-consuming, and tools such as <a href="https://github.com/qarmin/czkawka" target="_blank">**Czkawka**</a> (a large inspiration for this project) can detect a few _very similar_ images, but don't group _somewhat similar_ bursts.
 
 Cullergrader is named for being a tool that culls and grades* photos. Please note that it doesn't actually _colour grade_ photos.
 
