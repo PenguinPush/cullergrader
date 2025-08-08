@@ -11,7 +11,7 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
     <img src="images/exampleA.JPG" alt="DSC07442.JPG" width="300"/>
     <img src="images/exampleB.JPG" alt="DSC07443.JPG" width="300"/>
 </div>
-<p align="center">For example: Cullergrader would mark these two images as "similar" (at similarity threshold >= 37%)</p>
+<p align="left">For example: Cullergrader would mark these two images as "similar" (at similarity threshold >= 37%)</p>
 
 ## Table of Contents
 1. [Features](#features)
