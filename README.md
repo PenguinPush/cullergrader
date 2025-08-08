@@ -4,6 +4,7 @@
 Like many photographers, I have the habit of taking the same shot multiple times and selecting the best one to keep. However, when going through thousands of photos, this process of culling images is time-consuming, and tools such as <a href="https://github.com/qarmin/czkawka" target="_blank">**Czkawka**</a> (a large inspiration for this project) can detect a few _very similar_ images, but don't group _somewhat similar_ bursts.
 
 Cullergrader is named for being a tool that culls and grades* photos. Please note that it doesn't actually _colour grade_ photos.
+
 <sub>* grading photos has yet to be implemented...</sub>
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
