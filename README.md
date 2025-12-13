@@ -105,6 +105,47 @@ Best takes can be exported to a folder using `File > Export Best Takes` or with 
 
 ![images/export_to.png](images/export_to.png)
 
+## CLI Usage
+
+Cullergrader can be run in command-line mode for automated workflows and scripting.
+
+### Basic Usage
+
+```bash
+# Launch GUI (no arguments)
+java -jar cullergrader.jar
+
+# Run CLI mode
+java -jar cullergrader.jar --input /path/to/photos --output /path/to/export
+```
+
+### CLI Options
+
+| Option | Short | Description | Required |
+|--------|-------|-------------|----------|
+| `--input` | `-i` | Input folder containing photos | Yes |
+| `--output` | `-o` | Output folder for best takes (preview mode if omitted) | No |
+| `--time` | `-t` | Time threshold in seconds (default: 15) | No |
+| `--similarity` | `-s` | Similarity threshold 0-100 (default: 45) | No |
+| `--help` | `-h` | Show help message | No |
+
+### Examples
+
+**Preview mode (no export)**:
+```bash
+java -jar cullergrader.jar --input ~/photos/vacation
+```
+
+**Export to folder**:
+```bash
+java -jar cullergrader.jar --input ~/photos/vacation --output ~/photos/best
+```
+
+**Custom thresholds**:
+```bash
+java -jar cullergrader.jar -i ~/photos/vacation -o ~/photos/best -t 10 -s 40
+```
+
 ## Config
 ### Default Config
 ```json
