@@ -13,6 +13,7 @@ public class DefaultAppConstants {
     public int HASHED_HEIGHT = 8;
     public float TIME_THRESHOLD_SECONDS = 15;
     public float SIMILARITY_THRESHOLD_PERCENT = 45;
+    public int IMAGE_PREVIEW_CACHE_SIZE_MB = 2048;  // Default 2048 MB (2 GB)
 
     public int MAX_PRIORITY = 0;
     public int IMAGE_PRIORITY = 1;
