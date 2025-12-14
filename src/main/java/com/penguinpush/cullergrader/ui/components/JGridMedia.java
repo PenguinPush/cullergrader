@@ -18,6 +18,7 @@ public class JGridMedia extends JLabel {
     private PhotoGridFrame photoGridFrame;
     private Photo thumbnailPhoto = new Photo(new File("placeholder.jpg"), 0, "");
     private ImageLoader imageLoader;
+    private boolean isCurrentlyViewed = false;
 
 
     public JGridMedia(GridMedia gridMedia, ImageIcon placeholder, Dimension dimensions, ImageLoader imageLoader) {
@@ -58,7 +59,9 @@ public class JGridMedia extends JLabel {
         if (gridMedia instanceof Photo) {
             thumbnailPhoto = (Photo) gridMedia;
         } else if (gridMedia instanceof PhotoGroup) {
-            thumbnailPhoto = ((PhotoGroup) gridMedia).getBestTake();
+            PhotoGroup photoGroup = (PhotoGroup) gridMedia;
+            // Always use first photo in group for thumbnail
+            thumbnailPhoto = photoGroup.getPhotos().isEmpty() ? null : photoGroup.getPhotos().get(0);
         }
 
         if (thumbnailPhoto != null) {
@@ -84,8 +87,8 @@ public class JGridMedia extends JLabel {
         if (gridMedia instanceof Photo) {
             Photo photo = (Photo) gridMedia;
 
-            if (photo.isBestTake()) {
-                setLabelText(AppConstants.BESTTAKE_LABEL_TEXT);
+            if (photo.isSelected()) {
+                setLabelText(AppConstants.SELECTED_LABEL_TEXT);
             } else {
                 setLabelText(null);
             }
@@ -96,10 +99,42 @@ public class JGridMedia extends JLabel {
         return thumbnailPhoto;
     }
 
+    public void setCurrentlyViewed(boolean currentlyViewed) {
+        this.isCurrentlyViewed = currentlyViewed;
+        repaint();
+    }
+
+    public boolean isCurrentlyViewed() {
+        return isCurrentlyViewed;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        // Apply 50% opacity to groups with 0 selections
+        if (gridMedia instanceof PhotoGroup) {
+            PhotoGroup photoGroup = (PhotoGroup) gridMedia;
+            if (photoGroup.getSelectedTakes().isEmpty()) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+                super.paintComponent(g2d);
+                g2d.dispose();
+            } else {
+                super.paintComponent(g);
+            }
+        } else {
+            super.paintComponent(g);
+        }
+
         updateBestTake();
+
+        // Draw 3px red border if this is the currently viewed photo
+        if (isCurrentlyViewed && gridMedia instanceof Photo) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setColor(Color.RED);
+            g2d.setStroke(new BasicStroke(3));
+            g2d.drawRect(1, 1, getWidth() - 3, getHeight() - 3);
+            g2d.dispose();
+        }
 
         if (labelText != null) {
             Graphics2D graphics2d = (Graphics2D) g.create();

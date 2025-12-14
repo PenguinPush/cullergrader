@@ -36,7 +36,14 @@ public class PhotoGridFrame extends JFrame {
         jGridPanel.populateGrid((List<GridMedia>) (List<? extends GridMedia>) photoGroup.getPhotos(), width, height, AppConstants.PHOTO_OFFSCREEN_PRIORITY);
         jGridPanel.updatePriorities(AppConstants.PHOTO_ONSCREEN_PRIORITY, AppConstants.PHOTO_OFFSCREEN_PRIORITY);
 
-        setImagePanelPhoto(photoGroup.getBestTake());
+        // Get first selected photo (or first photo if none selected)
+        Photo photoToShow = photoGroup.getSelectedTakes().isEmpty()
+            ? (photoGroup.getPhotos().isEmpty() ? null : photoGroup.getPhotos().get(0))
+            : photoGroup.getSelectedTakes().iterator().next();
+
+        if (photoToShow != null) {
+            setImagePanelPhoto(photoToShow);
+        }
         setVisible(true);
     }
 
@@ -86,23 +93,32 @@ public class PhotoGridFrame extends JFrame {
         }
     }
 
-    private void setBestTake() {
+    private void toggleSelection() {
         Photo photo = jImagePanel.getPhoto();
 
         if (photoGroup.getIndex() <= photoGroups.size() - 1) {
-            photoGroup.setBestTake(photo);
+            photoGroup.toggleSelection(photo);
             groupGridFrame.setNeedsRefresh();
+            jGridPanel.repaint(); // Repaint photo grid thumbnails
+            groupGridFrame.repaint(); // Repaint group grid to update opacity
             repaint();
         }
+    }
+
+    // Keep for compatibility with generated menu code
+    private void setBestTake() {
+        toggleSelection();
     }
 
     public void setImagePanelPhoto(Photo photo) {
         if (thumbnailCache.containsKey(photo)) {
             jImagePanel.setImage(thumbnailCache.get(photo));
-            return;
+        } else {
+            SwingUtilities.invokeLater(() -> jImagePanel.setPhoto(photo));
         }
 
-        SwingUtilities.invokeLater(() -> jImagePanel.setPhoto(photo));
+        // Update border highlighting for currently viewed photo
+        jGridPanel.setCurrentlyViewedPhoto(photo);
     }
 
     @Override

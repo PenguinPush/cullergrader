@@ -13,6 +13,7 @@ public class DefaultAppConstants {
     public int HASHED_HEIGHT = 8;
     public float TIME_THRESHOLD_SECONDS = 15;
     public float SIMILARITY_THRESHOLD_PERCENT = 45;
+    public String DEFAULT_SELECTION_STRATEGY = "first";
 
     public int MAX_PRIORITY = 0;
     public int IMAGE_PRIORITY = 1;
@@ -44,7 +45,7 @@ public class DefaultAppConstants {
     public String KEYBIND_PHOTO_NEXT = "RIGHT";
     public String KEYBIND_GROUP_PREVIOUS = "UP";
     public String KEYBIND_GROUP_NEXT = "DOWN";
-    public String KEYBIND_SET_BESTTAKE = "SPACE";
+    public String KEYBIND_TOGGLE_SELECTION = "SPACE";
 
-    public String BESTTAKE_LABEL_TEXT = "★";
+    public String SELECTED_LABEL_TEXT = "★";
 }

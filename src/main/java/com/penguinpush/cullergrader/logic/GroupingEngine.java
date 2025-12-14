@@ -57,6 +57,7 @@ public class GroupingEngine {
                 currentGroup.addPhoto(current);
             } else {
                 currentGroup.setIndex(groups.size());
+                currentGroup.applyDefaultSelectionStrategy();
                 groups.add(currentGroup);
                 currentGroup = new PhotoGroup();
 
@@ -72,6 +73,7 @@ public class GroupingEngine {
         // add the last group too
         if (currentGroup.getSize() > 0) {
             currentGroup.setIndex(groups.size());
+            currentGroup.applyDefaultSelectionStrategy();
             groups.add(currentGroup);
         }
 

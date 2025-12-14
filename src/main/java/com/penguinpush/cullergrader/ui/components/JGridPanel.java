@@ -89,8 +89,24 @@ public class JGridPanel extends JPanel {
                     imageLoader.updatePriority(photo, priority);
                 } else if (jGridMedia.gridMedia instanceof PhotoGroup) {
                     PhotoGroup photoGroup = (PhotoGroup) jGridMedia.gridMedia;
-                    imageLoader.updatePriority(photoGroup.getBestTake(), priority);
+                    // Update priority for first photo in group (thumbnail)
+                    if (!photoGroup.getPhotos().isEmpty()) {
+                        Photo firstPhoto = photoGroup.getPhotos().get(0);
+                        imageLoader.updatePriority(firstPhoto, priority);
+                    }
                 }
+            }
+        }
+    }
+
+    public void setCurrentlyViewedPhoto(Photo currentPhoto) {
+        for (Component component : gridPanel.getComponents()) {
+            if (component instanceof JGridMedia) {
+                JGridMedia jGridMedia = (JGridMedia) component;
+                // Set border on the matching photo thumbnail
+                boolean isCurrentlyViewed = jGridMedia.gridMedia instanceof Photo
+                        && jGridMedia.gridMedia == currentPhoto;
+                jGridMedia.setCurrentlyViewed(isCurrentlyViewed);
             }
         }
     }

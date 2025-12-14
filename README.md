@@ -21,8 +21,8 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 3. [How to Use](#how-to-use)
    1. [Open a Folder of Images](#1-open-a-folder-of-images)
    2. [Calibrate Grouping Settings](#2-calibrate-grouping-settings)
-   3. [View Photos and Select Best Takes](#3-view-photos-and-select-best-takes)
-   4. [Export Your Best Takes](#4-export-your-best-takes)
+   3. [View Photos and Select Takes](#3-view-photos-and-select-takes)
+   4. [Export Selected Takes](#4-export-selected-takes)
 4. [Config](#config)
    1. [Default Config](#default-config)
    2. [Config Settings Explained](#config-settings-explained)
@@ -91,8 +91,8 @@ Although the default settings are designed to work fine out of the box, dependin
 
 ![images/grouping_settings.png](images/grouping_settings.png)
 
-### 3. View Photos and Select Best Takes
-By clicking on a photo, users can access the `Photo Viewer`, bringing up all individual photos in a group, with the best take marked by a star (which by default is the first image in group). By navigating using either mouse or `arrow keys` (left and right to move between photos, up and down to move between groups) to a photo, they can use the `spacebar` or `Controls > Set Best Take` to change a photo to the best take. 
+### 3. View Photos and Select Takes
+By clicking on a photo, users can access the `Photo Viewer`, bringing up all individual photos in a group, with selected takes marked by a star. By navigating using either mouse or `arrow keys` (left and right to move between photos, up and down to move between groups), users can press `spacebar` or use `Controls > Set as Selected Take` to toggle photo selection. Multiple photos can be selected per group, and groups with 0 selections will not be exported. 
 
 ![images/photo_viewer.png](images/photo_viewer.png)
 
@@ -100,8 +100,8 @@ By clicking on a photo, users can access the `Photo Viewer`, bringing up all ind
 
 ![images/photo_info.png](images/photo_info.png)
 
-### 4. Export Your Best Takes
-Best takes can be exported to a folder using `File > Export Best Takes` or with `Ctrl + S`. After choosing an export folder, the selected best takes will begin copying to that folder!
+### 4. Export Selected Takes
+Selected takes can be exported to a folder using `File > Export Selected Takes` or with `Ctrl + S`. After choosing an export folder, all selected takes from each group will be copied to that folder. Groups with no selections will be skipped.
 
 ![images/export_to.png](images/export_to.png)
 
@@ -119,7 +119,8 @@ Best takes can be exported to a folder using `File > Export Best Takes` or with 
     "HASHED_WIDTH": 8,
     "HASHED_HEIGHT": 8,
     "TIME_THRESHOLD_SECONDS": 15,
-    "SIMILARITY_THRESHOLD_PERCENT": 45
+    "SIMILARITY_THRESHOLD_PERCENT": 45,
+    "DEFAULT_SELECTION_STRATEGY": "first"
 }
 ```
 
@@ -137,8 +138,9 @@ Best takes can be exported to a folder using `File > Export Best Takes` or with 
 | `HASHED_HEIGHT`                | The height that images are computed at before hashing, higher values mean more accurate similarity checks at the cost of performance                                                                                                       | `int`         |
 | `TIME_THRESHOLD_SECONDS`       | The default amount of seconds between photos (from the timestamp) before they're counted as a new group. Editable in-app, but will not change the default stored here                                                                      | `float`       |
 | `SIMILARITY_THRESHOLD_PERCENT` | The default similarity between two photo hashes before they're counted as a new group. Higher values means more lenience in image similarity (larger groups, less in number). Editable in-app, but will not change the default stored here | `float`       |
+| `DEFAULT_SELECTION_STRATEGY`   | The automatic selection strategy when creating groups. Options: `"first"` (select first photo), `"last"` (select last photo), `"first_and_last"` (select both), `"all"` (select all), `"none"` (no automatic selection)                   | `String`      |
 
-Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_SET_BESTTAKE`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended. 
+Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_TOGGLE_SELECTION`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended. 
 
 ## Contributing
 Contributions to Cullergrader are **greatly appreciated**, as a tool made from one photographer to another, the best way Cullergrader can improve is through continued feedback and contributions.

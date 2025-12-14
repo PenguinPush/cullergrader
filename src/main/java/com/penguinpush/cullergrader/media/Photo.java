@@ -109,8 +109,8 @@ public class Photo extends GridMedia {
         this.group = group;
     }
 
-    public boolean isBestTake() {
-        return group != null && group.getBestTake() == this;
+    public boolean isSelected() {
+        return group != null && group.isSelected(this);
     }
 
     public void setMetrics(float deltaTimeRatio, float hammingDistanceRatio) {

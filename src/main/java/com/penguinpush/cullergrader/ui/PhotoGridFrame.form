@@ -63,7 +63,7 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="SPACE"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Set Best Take"/>
+                <Property name="text" type="java.lang.String" value="Set as Selected Take"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuSetBestTakeActionPerformed"/>
