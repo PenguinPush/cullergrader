@@ -14,6 +14,7 @@ public class DefaultAppConstants {
     public float TIME_THRESHOLD_SECONDS = 15;
     public float SIMILARITY_THRESHOLD_PERCENT = 45;
     public String DEFAULT_SELECTION_STRATEGY = "first";
+    public int IMAGE_PREVIEW_CACHE_SIZE_MB = 2048;
 
     public int MAX_PRIORITY = 0;
     public int IMAGE_PRIORITY = 1;

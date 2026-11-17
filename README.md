@@ -26,11 +26,13 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 4. [Config](#config)
    1. [Default Config](#default-config)
    2. [Config Settings Explained](#config-settings-explained)
-5. [Contributing](#contributing)
-6. [License](#license)
+5. [Performance Tuning](#performance-tuning)
+6. [Contributing](#contributing)
+7. [License](#license)
 
 ## Features
 - 100% free and open-source!
+- Experimental RAW image format support - works with most camera RAW files that contain an embedded JPEG preview
 - Configurable options for calibrating your perceptual hash
     - Hash similarity
     - Timestamp difference
@@ -48,7 +50,7 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
     - Cache options
     - Grouping settings
     - Dark theme
-      
+
 ![images/group_viewer.png](images/group_viewer.png)
 
 
@@ -105,7 +107,62 @@ Selected takes can be exported to a folder using `File > Export Selected Takes` 
 
 ![images/export_to.png](images/export_to.png)
 
+## CLI Usage
+
+Cullergrader can be run in command-line mode for automated workflows and scripting.
+
+### Basic Usage
+
+```bash
+# Launch GUI (no arguments)
+java -jar cullergrader.jar
+
+# Run CLI mode
+java -jar cullergrader.jar --input /path/to/photos --output /path/to/export
+```
+
+### CLI Options
+
+| Option | Short | Description | Required |
+|--------|-------|-------------|----------|
+| `--input` | `-i` | Input folder containing photos | Yes |
+| `--output` | `-o` | Output folder for best takes (preview mode if omitted) | No |
+| `--json` | `-j` | Export group information to JSON file | No |
+| `--time` | `-t` | Time threshold in seconds (default: 15) | No |
+| `--similarity` | `-s` | Similarity threshold 0-100 (default: 45) | No |
+| `--help` | `-h` | Show help message | No |
+
+### Examples
+
+**Preview mode (no export)**:
+```bash
+java -jar cullergrader.jar --input ~/photos/vacation
+```
+
+**Export to folder**:
+```bash
+java -jar cullergrader.jar --input ~/photos/vacation --output ~/photos/best
+```
+
+**Custom thresholds**:
+```bash
+java -jar cullergrader.jar -i ~/photos/vacation -o ~/photos/best -t 10 -s 40
+```
+
+**Export JSON metadata only**:
+```bash
+java -jar cullergrader.jar --input ~/photos/vacation --json groups.json
+```
+
+**Export both files and JSON**:
+```bash
+java -jar cullergrader.jar -i ~/photos/vacation -o ~/photos/best --json ~/photos/best/groups.json
+```
+
 ## Config
+
+Configuration is **optional**. Cullergrader includes sensible defaults for all settings. To customize, create a `config.json` file in the same directory as the executable.
+
 ### Default Config
 ```json
 {
@@ -121,6 +178,7 @@ Selected takes can be exported to a folder using `File > Export Selected Takes` 
     "TIME_THRESHOLD_SECONDS": 15,
     "SIMILARITY_THRESHOLD_PERCENT": 45,
     "DEFAULT_SELECTION_STRATEGY": "first"
+    "IMAGE_PREVIEW_CACHE_SIZE_MB": 2048
 }
 ```
 
@@ -141,6 +199,36 @@ Selected takes can be exported to a folder using `File > Export Selected Takes` 
 | `DEFAULT_SELECTION_STRATEGY`   | The automatic selection strategy when creating groups. Options: `"first"` (select first photo), `"last"` (select last photo), `"first_and_last"` (select both), `"all"` (select all), `"none"` (no automatic selection)                   | `String`      |
 
 Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_TOGGLE_SELECTION`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended. 
+| `IMAGE_PREVIEW_CACHE_SIZE_MB`  | Maximum memory (in megabytes) to use for caching image previews. Default 2048 MB (2 GB). Increase for very large photo shoots (see Performance Tuning section)                                                                             | `int`         |
+
+Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_SET_BESTTAKE`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended.
+
+## Performance Tuning
+
+For large photo shoots, you can increase the image preview cache size in `config.json`:
+
+```json
+{
+  "IMAGE_PREVIEW_CACHE_SIZE_MB": 2048
+}
+```
+
+**Default:** 2048 MB (2 GB)
+
+The preview cache stores scaled thumbnails (240×160) for all image files in memory to avoid re-reading from disk. The cache fills until reaching the configured limit, then stops caching new entries (no eviction).
+
+**Configuration examples:**
+- 512 MB = Smaller cache for limited memory systems
+- 1024 MB = Moderate cache for typical photo shoots
+- 2048 MB = Default (recommended for most users)
+- 4096 MB = Very large photo shoots (4000+ files)
+
+The cache applies to all image formats (JPEG, PNG, RAW, etc.) and significantly improves performance when:
+- Changing grouping thresholds
+- Reloading groups
+- Scrolling through large photo sets
+
+The cache clears automatically when loading a new directory.
 
 ## Contributing
 Contributions to Cullergrader are **greatly appreciated**, as a tool made from one photographer to another, the best way Cullergrader can improve is through continued feedback and contributions.

@@ -36,6 +36,7 @@ public class AppConstants {
     public static final float TIME_THRESHOLD_SECONDS = config.TIME_THRESHOLD_SECONDS;
     public static final float SIMILARITY_THRESHOLD_PERCENT = config.SIMILARITY_THRESHOLD_PERCENT;
     public static final String DEFAULT_SELECTION_STRATEGY = config.DEFAULT_SELECTION_STRATEGY;
+    public static final int IMAGE_PREVIEW_CACHE_SIZE_MB = config.IMAGE_PREVIEW_CACHE_SIZE_MB;
 
     public static final int MAX_PRIORITY = config.MAX_PRIORITY;
     public static final int IMAGE_PRIORITY = config.IMAGE_PRIORITY;

@@ -32,11 +32,21 @@ public class GroupingEngine {
     }
 
     public List<PhotoGroup> generateGroups(List<Photo> photoList, float timestampThreshold, float similarityThreshold) {
+        // Filter out photos with null hashes (RAW files without previews, corrupted files, etc.)
+        List<Photo> validPhotos = new ArrayList<>();
+        for (Photo photo : photoList) {
+            if (photo.getHash() != null) {
+                validPhotos.add(photo);
+            } else {
+                logMessage("Skipping photo with null hash: " + photo.getFile().getName());
+            }
+        }
+
         List<PhotoGroup> groups = new ArrayList<>();
         PhotoGroup currentGroup = new PhotoGroup();
 
-        for (int i = 0; i < photoList.size(); i++) {
-            Photo current = photoList.get(i);
+        for (int i = 0; i < validPhotos.size(); i++) {
+            Photo current = validPhotos.get(i);
 
             if (currentGroup.getSize() == 0) {
                 current.setIndex(0);
@@ -69,6 +79,8 @@ public class GroupingEngine {
 
             logMessage("added " + current.getFile().getName() + " " + deltaTimeSeconds + " " + hammingDistancePercent + " to group " + groups.size());
         }
+
+        logMessage("Filtered " + (photoList.size() - validPhotos.size()) + " photos with null hashes");
 
         // add the last group too
         if (currentGroup.getSize() > 0) {
