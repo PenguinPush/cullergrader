@@ -80,7 +80,7 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 
 ## How to Use
 ### 1. Open a Folder of Images
-Folders can be opened from `File > Open Folder` or with `Ctrl + O`. The first time images are computed, it may take a few minutes (but often less) to hash the images, depending on image count and disk speed. Hashes are cached for future use in `cache.json`, so as long as this file stays intact, future computations of the same images will be nearly instant.
+Folders can be opened from `File > Open Folder` or with `Ctrl + O`. The first time images are computed, it may take a few minutes (but often less) to hash the images, depending on image count and disk speed. Hashes are cached for future use in `hashes.json` (configurable via `CACHE_FILE`), so as long as this file stays intact, future computations of the same images will be nearly instant.
 
 ![images/open_folder.png](images/open_folder.png)
 
@@ -148,7 +148,7 @@ Any and all kinds of contributions to Cullergrader are welcome, please fork the 
 2. Create your Feature Branch with `git checkout -b feature/<your-awesome-feature>`
 3. Commit your changes with `git commit -m "Add <a description of your change>"`
 4. Push your changes with `git push origin feature/<your-awesome-feature>`
-5. Open a Pull Request at the original repository here, don't forget to describe what you added!
+5. Open a Pull Request at the [original repository](https://github.com/PenguinPush/cullergrader/pulls), don't forget to describe what you added!
 
 
 ## License
