@@ -3,6 +3,7 @@ package com.penguinpush.cullergrader;
 import com.penguinpush.cullergrader.logic.*;
 import com.penguinpush.cullergrader.ui.GroupGridFrame;
 import com.penguinpush.cullergrader.config.AppConstants;
+import com.penguinpush.cullergrader.media.PhotoUtils;
 import javax.swing.SwingUtilities;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatDarculaLaf;

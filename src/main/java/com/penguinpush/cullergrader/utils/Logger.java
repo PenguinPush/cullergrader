@@ -57,4 +57,23 @@ public class Logger {
     public static void registerLogCallback(Consumer<String> callback) {
         logCallback = callback;
     }
+
+    /**
+     * Logs a message to console and log file only, without triggering the GUI callback.
+     * Useful for verbose/cache operations that shouldn't clutter the GUI info panel.
+     */
+    public static synchronized void logToConsoleOnly(String message) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(logFile, true))) {
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"));
+
+            bufferedWriter.write(timestamp + ": " + message);
+            bufferedWriter.newLine();
+
+            // Do NOT call logCallback - this prevents GUI updates
+            System.out.println(message);
+
+        } catch (IOException e) {
+            System.err.println("an error occurred... ironically, there's nowhere to log this:  " + e.getMessage());
+        }
+    }
 }

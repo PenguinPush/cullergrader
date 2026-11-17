@@ -290,6 +290,10 @@ public class GroupGridFrame extends JFrame {
             long startTime = System.currentTimeMillis();
 
             importDirectory = chooser.getSelectedFile();
+
+            // Clear image preview cache when loading new directory (fresh start)
+            PhotoUtils.clearImagePreviewCache();
+
             List<PhotoGroup> groups = FileUtils.loadFolder(importDirectory, groupingEngine, (float) jTimestampSpinner.getValue(), (float) jSimilaritySpinner.getValue());
             loadFrame(groups);
 
