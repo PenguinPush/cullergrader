@@ -3,7 +3,7 @@
 All notable changes to Cullergrader are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses [Semantic Versioning](https://semver.org/).
 
-## [1.1.0] - Nov. 17th, 2026
+## [1.1.0] - 2026-11-17
 
 ### Added
 - **Native installers** for macOS (`.dmg`), Windows (`.msi`) and Debian/Ubuntu (`.deb`). Java is bundled in, so you no longer need to install it yourself. The portable `.zip` is still available for other systems.
@@ -50,7 +50,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Thanks to [shipurjan](https://github.com/shipurjan) for contributing CLI mode, JSON export, RAW support, and multiple selections!
 
-## [1.0.0] - Initial release
+## [1.0.0] - 2025-08-04
 
 - Groups photos by perceptual similarity and timestamp, with adjustable thresholds
 - Photo viewer with keyboard navigation for choosing the best take in each group
