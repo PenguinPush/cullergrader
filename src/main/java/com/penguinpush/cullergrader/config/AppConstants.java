@@ -35,6 +35,7 @@ public class AppConstants {
     public static final int HASHED_HEIGHT = config.HASHED_HEIGHT;
     public static final float TIME_THRESHOLD_SECONDS = config.TIME_THRESHOLD_SECONDS;
     public static final float SIMILARITY_THRESHOLD_PERCENT = config.SIMILARITY_THRESHOLD_PERCENT;
+    public static final String DEFAULT_SELECTION_STRATEGY = config.DEFAULT_SELECTION_STRATEGY;
     public static final int IMAGE_PREVIEW_CACHE_SIZE_MB = config.IMAGE_PREVIEW_CACHE_SIZE_MB;
 
     public static final int MAX_PRIORITY = config.MAX_PRIORITY;
@@ -67,7 +68,7 @@ public class AppConstants {
     public static final String KEYBIND_PHOTO_NEXT = config.KEYBIND_PHOTO_NEXT;
     public static final String KEYBIND_GROUP_PREVIOUS = config.KEYBIND_GROUP_PREVIOUS;
     public static final String KEYBIND_GROUP_NEXT = config.KEYBIND_GROUP_NEXT;
-    public static final String KEYBIND_SET_BESTTAKE = config.KEYBIND_SET_BESTTAKE;
+    public static final String KEYBIND_TOGGLE_SELECTION = config.KEYBIND_TOGGLE_SELECTION;
 
-    public static final String BESTTAKE_LABEL_TEXT = config.BESTTAKE_LABEL_TEXT;
+    public static final String SELECTED_LABEL_TEXT = config.SELECTED_LABEL_TEXT;
 }
