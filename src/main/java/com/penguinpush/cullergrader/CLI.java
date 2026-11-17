@@ -222,23 +222,26 @@ public class CLI {
         }
 
         // Export or preview
+        int selectedCount = 0;
+        for (PhotoGroup group : groups) {
+            selectedCount += group.getSelectedTakes().size();
+        }
+
         if (previewMode) {
-            System.out.println("Preview - Best takes that would be exported:");
-            System.out.println("--------------------------------------------");
+            System.out.println("Preview - Selected takes that would be exported:");
+            System.out.println("------------------------------------------------");
             for (int i = 0; i < groups.size(); i++) {
-                PhotoGroup group = groups.get(i);
-                Photo bestTake = group.getBestTake();
-                if (bestTake != null) {
-                    System.out.println("[Group " + i + "] " + bestTake.getFile().getName());
+                for (Photo selected : groups.get(i).getSelectedTakes()) {
+                    System.out.println("[Group " + i + "] " + selected.getFile().getName());
                 }
             }
             System.out.println();
-            System.out.println("To export these " + groups.size() + " files, run again with --output <path>");
+            System.out.println("To export these " + selectedCount + " files, run again with --output <path>");
         } else {
-            System.out.println("Exporting best takes to: " + outputFolder.getAbsolutePath());
+            System.out.println("Exporting selected takes to: " + outputFolder.getAbsolutePath());
             FileUtils.exportBestTakes(groups, outputFolder);
             System.out.println();
-            System.out.println("Successfully exported " + groups.size() + " files");
+            System.out.println("Exported " + selectedCount + " selected files");
         }
 
         // Summary
