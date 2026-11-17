@@ -21,16 +21,18 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 3. [How to Use](#how-to-use)
    1. [Open a Folder of Images](#1-open-a-folder-of-images)
    2. [Calibrate Grouping Settings](#2-calibrate-grouping-settings)
-   3. [View Photos and Select Best Takes](#3-view-photos-and-select-best-takes)
-   4. [Export Your Best Takes](#4-export-your-best-takes)
+   3. [View Photos and Select Takes](#3-view-photos-and-select-takes)
+   4. [Export Selected Takes](#4-export-selected-takes)
 4. [Config](#config)
    1. [Default Config](#default-config)
    2. [Config Settings Explained](#config-settings-explained)
-5. [Contributing](#contributing)
-6. [License](#license)
+5. [Performance Tuning](#performance-tuning)
+6. [Contributing](#contributing)
+7. [License](#license)
 
 ## Features
 - 100% free and open-source!
+- Experimental RAW image format support - works with most camera RAW files that contain an embedded JPEG preview
 - Configurable options for calibrating your perceptual hash
     - Hash similarity
     - Timestamp difference
@@ -48,7 +50,7 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
     - Cache options
     - Grouping settings
     - Dark theme
-      
+
 ![images/group_viewer.png](images/group_viewer.png)
 
 
@@ -91,8 +93,8 @@ Although the default settings are designed to work fine out of the box, dependin
 
 ![images/grouping_settings.png](images/grouping_settings.png)
 
-### 3. View Photos and Select Best Takes
-By clicking on a photo, users can access the `Photo Viewer`, bringing up all individual photos in a group, with the best take marked by a star (which by default is the first image in group). By navigating using either mouse or `arrow keys` (left and right to move between photos, up and down to move between groups) to a photo, they can use the `spacebar` or `Controls > Set Best Take` to change a photo to the best take. 
+### 3. View Photos and Select Takes
+By clicking on a photo, users can access the `Photo Viewer`, bringing up all individual photos in a group, with selected takes marked by a star. By navigating using either mouse or `arrow keys` (left and right to move between photos, up and down to move between groups), users can press `spacebar` or use `Controls > Set as Selected Take` to toggle photo selection. Multiple photos can be selected per group, and groups with 0 selections will not be exported. 
 
 ![images/photo_viewer.png](images/photo_viewer.png)
 
@@ -100,12 +102,67 @@ By clicking on a photo, users can access the `Photo Viewer`, bringing up all ind
 
 ![images/photo_info.png](images/photo_info.png)
 
-### 4. Export Your Best Takes
-Best takes can be exported to a folder using `File > Export Best Takes` or with `Ctrl + S`. After choosing an export folder, the selected best takes will begin copying to that folder!
+### 4. Export Selected Takes
+Selected takes can be exported to a folder using `File > Export Selected Takes` or with `Ctrl + S`. After choosing an export folder, all selected takes from each group will be copied to that folder. Groups with no selections will be skipped.
 
 ![images/export_to.png](images/export_to.png)
 
+## CLI Usage
+
+Cullergrader can be run in command-line mode for automated workflows and scripting.
+
+### Basic Usage
+
+```bash
+# Launch GUI (no arguments)
+java -jar cullergrader.jar
+
+# Run CLI mode
+java -jar cullergrader.jar --input /path/to/photos --output /path/to/export
+```
+
+### CLI Options
+
+| Option | Short | Description | Required |
+|--------|-------|-------------|----------|
+| `--input` | `-i` | Input folder containing photos | Yes |
+| `--output` | `-o` | Output folder for best takes (preview mode if omitted) | No |
+| `--json` | `-j` | Export group information to JSON file | No |
+| `--time` | `-t` | Time threshold in seconds (default: 15) | No |
+| `--similarity` | `-s` | Similarity threshold 0-100 (default: 45) | No |
+| `--help` | `-h` | Show help message | No |
+
+### Examples
+
+**Preview mode (no export)**:
+```bash
+java -jar cullergrader.jar --input ~/photos/vacation
+```
+
+**Export to folder**:
+```bash
+java -jar cullergrader.jar --input ~/photos/vacation --output ~/photos/best
+```
+
+**Custom thresholds**:
+```bash
+java -jar cullergrader.jar -i ~/photos/vacation -o ~/photos/best -t 10 -s 40
+```
+
+**Export JSON metadata only**:
+```bash
+java -jar cullergrader.jar --input ~/photos/vacation --json groups.json
+```
+
+**Export both files and JSON**:
+```bash
+java -jar cullergrader.jar -i ~/photos/vacation -o ~/photos/best --json ~/photos/best/groups.json
+```
+
 ## Config
+
+Configuration is **optional**. Cullergrader includes sensible defaults for all settings. To customize, create a `config.json` file in the same directory as the executable.
+
 ### Default Config
 ```json
 {
@@ -119,7 +176,9 @@ Best takes can be exported to a folder using `File > Export Best Takes` or with 
     "HASHED_WIDTH": 8,
     "HASHED_HEIGHT": 8,
     "TIME_THRESHOLD_SECONDS": 15,
-    "SIMILARITY_THRESHOLD_PERCENT": 45
+    "SIMILARITY_THRESHOLD_PERCENT": 45,
+    "DEFAULT_SELECTION_STRATEGY": "first"
+    "IMAGE_PREVIEW_CACHE_SIZE_MB": 2048
 }
 ```
 
@@ -137,8 +196,39 @@ Best takes can be exported to a folder using `File > Export Best Takes` or with 
 | `HASHED_HEIGHT`                | The height that images are computed at before hashing, higher values mean more accurate similarity checks at the cost of performance                                                                                                       | `int`         |
 | `TIME_THRESHOLD_SECONDS`       | The default amount of seconds between photos (from the timestamp) before they're counted as a new group. Editable in-app, but will not change the default stored here                                                                      | `float`       |
 | `SIMILARITY_THRESHOLD_PERCENT` | The default similarity between two photo hashes before they're counted as a new group. Higher values means more lenience in image similarity (larger groups, less in number). Editable in-app, but will not change the default stored here | `float`       |
+| `DEFAULT_SELECTION_STRATEGY`   | The automatic selection strategy when creating groups. Options: `"first"` (select first photo), `"last"` (select last photo), `"first_and_last"` (select both), `"all"` (select all), `"none"` (no automatic selection)                   | `String`      |
 
-Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_SET_BESTTAKE`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended. 
+Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_TOGGLE_SELECTION`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended. 
+| `IMAGE_PREVIEW_CACHE_SIZE_MB`  | Maximum memory (in megabytes) to use for caching image previews. Default 2048 MB (2 GB). Increase for very large photo shoots (see Performance Tuning section)                                                                             | `int`         |
+
+Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_SET_BESTTAKE`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended.
+
+## Performance Tuning
+
+For large photo shoots, you can increase the image preview cache size in `config.json`:
+
+```json
+{
+  "IMAGE_PREVIEW_CACHE_SIZE_MB": 2048
+}
+```
+
+**Default:** 2048 MB (2 GB)
+
+The preview cache stores scaled thumbnails (240×160) for all image files in memory to avoid re-reading from disk. The cache fills until reaching the configured limit, then stops caching new entries (no eviction).
+
+**Configuration examples:**
+- 512 MB = Smaller cache for limited memory systems
+- 1024 MB = Moderate cache for typical photo shoots
+- 2048 MB = Default (recommended for most users)
+- 4096 MB = Very large photo shoots (4000+ files)
+
+The cache applies to all image formats (JPEG, PNG, RAW, etc.) and significantly improves performance when:
+- Changing grouping thresholds
+- Reloading groups
+- Scrolling through large photo sets
+
+The cache clears automatically when loading a new directory.
 
 ## Contributing
 Contributions to Cullergrader are **greatly appreciated**, as a tool made from one photographer to another, the best way Cullergrader can improve is through continued feedback and contributions.
@@ -150,6 +240,9 @@ Any and all kinds of contributions to Cullergrader are welcome, please fork the 
 4. Push your changes with `git push origin feature/<your-awesome-feature>`
 5. Open a Pull Request at the [original repository](https://github.com/PenguinPush/cullergrader/pulls), don't forget to describe what you added!
 
+Thank you to our lovely contributors:
+- [tandrew](https://github.com/tandrew)
+- [shipurjan](https://github.com/shipurjan)
 
 ## License
 Distributed under the MIT License, see [LICENSE](https://github.com/PenguinPush/cullergrader/blob/main/LICENSE) for more info.
