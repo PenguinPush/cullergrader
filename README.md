@@ -125,6 +125,7 @@ java -jar cullergrader.jar --input /path/to/photos --output /path/to/export
 |--------|-------|-------------|----------|
 | `--input` | `-i` | Input folder containing photos | Yes |
 | `--output` | `-o` | Output folder for best takes (preview mode if omitted) | No |
+| `--json` | `-j` | Export group information to JSON file | No |
 | `--time` | `-t` | Time threshold in seconds (default: 15) | No |
 | `--similarity` | `-s` | Similarity threshold 0-100 (default: 45) | No |
 | `--help` | `-h` | Show help message | No |
@@ -144,6 +145,16 @@ java -jar cullergrader.jar --input ~/photos/vacation --output ~/photos/best
 **Custom thresholds**:
 ```bash
 java -jar cullergrader.jar -i ~/photos/vacation -o ~/photos/best -t 10 -s 40
+```
+
+**Export JSON metadata only**:
+```bash
+java -jar cullergrader.jar --input ~/photos/vacation --json groups.json
+```
+
+**Export both files and JSON**:
+```bash
+java -jar cullergrader.jar -i ~/photos/vacation -o ~/photos/best --json ~/photos/best/groups.json
 ```
 
 ## Config

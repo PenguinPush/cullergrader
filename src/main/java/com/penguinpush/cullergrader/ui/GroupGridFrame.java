@@ -103,6 +103,7 @@ public class GroupGridFrame extends JFrame {
         jMenu = new javax.swing.JMenu();
         jMenuItemOpen = new javax.swing.JMenuItem();
         jMenuItemExport = new javax.swing.JMenuItem();
+        jMenuItemExportJson = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cullergrader");
@@ -148,6 +149,14 @@ public class GroupGridFrame extends JFrame {
             }
         });
         jMenu.add(jMenuItemExport);
+
+        jMenuItemExportJson.setText("Export Group Information (JSON)");
+        jMenuItemExportJson.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemExportJsonActionPerformed(evt);
+            }
+        });
+        jMenu.add(jMenuItemExportJson);
 
         jMenuBar.add(jMenu);
 
@@ -214,6 +223,62 @@ public class GroupGridFrame extends JFrame {
         }
     }//GEN-LAST:event_jMenuItemExportActionPerformed
 
+    private void jMenuItemExportJsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExportJsonActionPerformed
+        if (photoGroups == null || photoGroups.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "No groups to export. Please open a folder first.",
+                    "No Groups",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser(importDirectory != null ? importDirectory : new File(AppConstants.DEFAULT_FOLDER_PATH));
+        chooser.setDialogTitle("Export Group Information (JSON)");
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setSelectedFile(new File("groups.json"));
+        chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("JSON files", "json"));
+
+        int result = chooser.showSaveDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+
+            // Ensure .json extension
+            final File jsonFile;
+            if (!selectedFile.getName().toLowerCase().endsWith(".json")) {
+                jsonFile = new File(selectedFile.getPath() + ".json");
+            } else {
+                jsonFile = selectedFile;
+            }
+
+            try {
+                float timeThreshold = (float) jTimestampSpinner.getValue();
+                float similarityThreshold = (float) jSimilaritySpinner.getValue();
+
+                FileUtils.exportGroupsJson(photoGroups, jsonFile, timeThreshold, similarityThreshold);
+
+                SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Group information exported to:\n" + jsonFile.getAbsolutePath(),
+                            "Export Successful!",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                });
+            } catch (Exception e) {
+                SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Failed to export JSON: " + e.getMessage(),
+                            "Export Failed",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                });
+            }
+        }
+    }//GEN-LAST:event_jMenuItemExportJsonActionPerformed
+
     private void jMenuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenActionPerformed
         JFileChooser chooser = new JFileChooser(importDirectory != null ? importDirectory : new File(AppConstants.DEFAULT_FOLDER_PATH));
         chooser.setDialogTitle("Open Folder...");
@@ -261,6 +326,7 @@ public class GroupGridFrame extends JFrame {
     private javax.swing.JMenu jMenu;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenuItem jMenuItemExport;
+    private javax.swing.JMenuItem jMenuItemExportJson;
     private javax.swing.JMenuItem jMenuItemOpen;
     private javax.swing.JButton jReloadButton;
     private javax.swing.JLabel jSimilarityLabel;

@@ -20,6 +20,7 @@ public class CLI {
     // Parsed arguments with defaults from AppConstants
     private String inputPath = null;
     private String outputPath = null;
+    private String jsonPath = null;
     private float timeThreshold = AppConstants.TIME_THRESHOLD_SECONDS;
     private float similarityThreshold = AppConstants.SIMILARITY_THRESHOLD_PERCENT;
 
@@ -113,6 +114,14 @@ public class CLI {
                 }
                 outputPath = args[++i];
             }
+            // JSON export path
+            else if (arg.equals("--json") || arg.equals("-j")) {
+                if (i + 1 >= args.length) {
+                    System.err.println("Error: --json requires a value");
+                    return false;
+                }
+                jsonPath = args[++i];
+            }
             // Time threshold
             else if (arg.equals("--time") || arg.equals("-t")) {
                 if (i + 1 >= args.length) {
@@ -204,6 +213,14 @@ public class CLI {
         System.out.println("Created " + groups.size() + " groups from " + photos.size() + " photos");
         System.out.println();
 
+        // Export JSON if requested
+        if (jsonPath != null) {
+            File jsonFile = new File(jsonPath);
+            System.out.println("Exporting group information to: " + jsonFile.getAbsolutePath());
+            FileUtils.exportGroupsJson(groups, jsonFile, timeThreshold, similarityThreshold);
+            System.out.println();
+        }
+
         // Export or preview
         if (previewMode) {
             System.out.println("Preview - Best takes that would be exported:");
@@ -246,6 +263,7 @@ public class CLI {
         System.out.println("OPTIONS:");
         System.out.println("  -i, --input <path>         Input folder containing photos (required)");
         System.out.println("  -o, --output <path>        Output folder for best takes (optional, preview mode if omitted)");
+        System.out.println("  -j, --json <path>          Export group information to JSON file (optional)");
         System.out.println("  -t, --time <seconds>       Time threshold in seconds (default: " + AppConstants.TIME_THRESHOLD_SECONDS + ")");
         System.out.println("  -s, --similarity <percent> Similarity threshold 0-100 (default: " + AppConstants.SIMILARITY_THRESHOLD_PERCENT + ")");
         System.out.println("  -h, --help                 Show this help message");
@@ -256,6 +274,12 @@ public class CLI {
         System.out.println();
         System.out.println("  # Export mode");
         System.out.println("  java -jar cullergrader.jar --input /photos --output /export");
+        System.out.println();
+        System.out.println("  # Export JSON metadata only");
+        System.out.println("  java -jar cullergrader.jar --input /photos --json groups.json");
+        System.out.println();
+        System.out.println("  # Export both files and JSON");
+        System.out.println("  java -jar cullergrader.jar -i /photos -o /export --json /export/groups.json");
         System.out.println();
         System.out.println("  # Custom thresholds with export");
         System.out.println("  java -jar cullergrader.jar -i /photos -o /export -t 10 -s 40");
