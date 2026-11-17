@@ -3,7 +3,7 @@
 All notable changes to Cullergrader are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses [Semantic Versioning](https://semver.org/).
 
-## [1.1.0] - Unreleased
+## [1.1.0] - Nov. 17th, 2026
 
 ### Added
 - **Native installers** for macOS (`.dmg`), Windows (`.msi`) and Debian/Ubuntu (`.deb`). Java is bundled in, so you no longer need to install it yourself. The portable `.zip` is still available for other systems.
