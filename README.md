@@ -240,6 +240,9 @@ Any and all kinds of contributions to Cullergrader are welcome, please fork the 
 4. Push your changes with `git push origin feature/<your-awesome-feature>`
 5. Open a Pull Request at the original repository here, don't forget to describe what you added!
 
+Thank you to our lovely contributors:
+- [tandrew](https://github.com/tandrew)
+- [shipurjan](https://github.com/shipurjan)
 
 ## License
 Distributed under the MIT License, see [LICENSE](https://github.com/PenguinPush/cullergrader/blob/main/LICENSE) for more info.
