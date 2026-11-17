@@ -2,6 +2,7 @@ package com.penguinpush.cullergrader.logic;
 
 import com.penguinpush.cullergrader.media.Photo;
 import com.penguinpush.cullergrader.media.PhotoGroup;
+
 import static com.penguinpush.cullergrader.utils.Logger.logMessage;
 
 import com.google.gson.Gson;
@@ -64,7 +65,7 @@ public class FileUtils {
 
                 try {
                     Files.copy(sourceFile.toPath(), destinationFile.toPath(),
-                              StandardCopyOption.REPLACE_EXISTING);
+                            StandardCopyOption.REPLACE_EXISTING);
                     logMessage("copied file: " + sourceFile.getAbsolutePath() + " → " + finalName);
                 } catch (IOException e) {
                     logMessage("couldn't copy file: " + sourceFile.getAbsolutePath());
@@ -81,8 +82,10 @@ public class FileUtils {
     private static String getExtension(String filename) {
         int lastDot = filename.lastIndexOf('.');
         return lastDot > 0 ? filename.substring(lastDot) : "";
+    }
+
     public static void exportGroupsJson(List<PhotoGroup> photoGroups, File jsonFile,
-                                         float timeThreshold, float similarityThreshold) {
+                                        float timeThreshold, float similarityThreshold) {
         // Create parent directories if needed
         File parentDir = jsonFile.getParentFile();
         if (parentDir != null && !parentDir.exists()) {
@@ -106,10 +109,11 @@ public class FileUtils {
             groupMap.put("groupIndex", group.getIndex());
             groupMap.put("photoCount", group.getSize());
 
-            Photo bestTake = group.getBestTake();
-            if (bestTake != null) {
-                groupMap.put("bestTakeFilename", bestTake.getFile().getName());
+            List<String> selectedFilenames = new ArrayList<>();
+            for (Photo selected : group.getSelectedTakes()) {
+                selectedFilenames.add(selected.getFile().getName());
             }
+            groupMap.put("selectedFilenames", selectedFilenames);
 
             List<Map<String, Object>> photosList = new ArrayList<>();
             for (Photo photo : group.getPhotos()) {
@@ -118,7 +122,7 @@ public class FileUtils {
                 photoMap.put("path", photo.getPath());
                 photoMap.put("timestamp", photo.getTimestamp());
                 photoMap.put("hash", photo.getHash());
-                photoMap.put("isBestTake", photo.isBestTake());
+                photoMap.put("isSelected", photo.isSelected());
 
                 List<Float> metrics = photo.getMetrics();
                 if (metrics.size() >= 2) {
