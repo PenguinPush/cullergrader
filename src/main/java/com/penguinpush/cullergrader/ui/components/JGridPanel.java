@@ -1,12 +1,15 @@
 package com.penguinpush.cullergrader.ui.components;
 
 import com.penguinpush.cullergrader.config.AppConstants;
+import com.penguinpush.cullergrader.config.AppPaths;
 import com.penguinpush.cullergrader.logic.ImageLoader;
 import com.penguinpush.cullergrader.media.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.net.URL;
 import java.util.List;
 
 public class JGridPanel extends JPanel {
@@ -37,10 +40,24 @@ public class JGridPanel extends JPanel {
         gridScrollPane.setVerticalScrollBarPolicy(policy);
     }
 
+    /**
+     * Uses PLACEHOLDER_THUMBNAIL_PATH if it points to a real file (relative paths resolve inside the data directory),
+     * otherwise falls back to the placeholder bundled in the jar.
+     */
+    private static ImageIcon loadPlaceholderIcon() {
+        File custom = AppPaths.resolve(AppConstants.PLACEHOLDER_THUMBNAIL_PATH);
+        if (custom.isFile()) {
+            return new ImageIcon(custom.getAbsolutePath());
+        }
+
+        URL bundled = JGridPanel.class.getResource("/placeholder.jpg");
+        return bundled != null ? new ImageIcon(bundled) : new ImageIcon();
+    }
+
     public void populateGrid(List<GridMedia> gridMedias, int width, int height, int priority) {
         gridPanel.removeAll();
 
-        ImageIcon placeholderIcon = new ImageIcon(AppConstants.PLACEHOLDER_THUMBNAIL_PATH);
+        ImageIcon placeholderIcon = loadPlaceholderIcon();
 
         for (GridMedia gridMedia : gridMedias) {
             JGridMedia jGridMedia = new JGridMedia(gridMedia, placeholderIcon, new Dimension(width, height), imageLoader);

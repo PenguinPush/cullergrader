@@ -86,29 +86,29 @@ public class PhotoUtils {
             return scalePreviewIfNeeded(entry.preview, targetWidth, targetHeight);
         }
 
-        // Cache miss - extract/read image
-        BufferedImage fullImage;
-        if (isRawFile(file)) {
-            // RAW files: Extract embedded JPEG preview
-            fullImage = extractRawPreview(file);
-            if (fullImage == null) {
-                logToConsoleOnly("Skipping RAW file without embedded preview: " + file.getName());
-                return null;
-            }
-        } else {
-            // Regular JPEG/PNG files: Read via ImageIO
-            fullImage = ImageIO.read(file);
-            if (fullImage == null) {
-                return null;
-            }
-        }
-
-        // Scale to display resolution and cache (NOT arbitrary size!)
+        // Cache miss - read at display resolution and cache that
         // Cache at THUMBNAIL_ICON_WIDTH × THUMBNAIL_ICON_HEIGHT (240×160 default)
         // This is the display resolution, so thumbnails can use it directly
         int cacheWidth = AppConstants.THUMBNAIL_ICON_WIDTH;
         int cacheHeight = AppConstants.THUMBNAIL_ICON_HEIGHT;
-        BufferedImage cachedPreview = scalePreviewIfNeeded(fullImage, cacheWidth, cacheHeight);
+
+        BufferedImage sourceImage;
+        if (isRawFile(file)) {
+            // RAW files: ImageIO can't decode them, so extract the embedded JPEG preview
+            sourceImage = extractRawPreview(file);
+            if (sourceImage == null) {
+                logToConsoleOnly("Skipping RAW file without embedded preview: " + file.getName());
+                return null;
+            }
+        } else {
+            // Regular JPEG/PNG files: subsampled read, never decodes the full-resolution image
+            sourceImage = readSubsampledImage(file, cacheWidth, cacheHeight);
+            if (sourceImage == null) {
+                return null;
+            }
+        }
+
+        BufferedImage cachedPreview = scalePreviewIfNeeded(sourceImage, cacheWidth, cacheHeight);
 
         // Store at display resolution (only if space available)
         ImagePreviewEntry newEntry = new ImagePreviewEntry(lastModified, cachedPreview);
@@ -126,6 +126,33 @@ public class PhotoUtils {
 
         // Return scaled to requested size (e.g., 8×8 for hashing, 240×160 for display)
         return scalePreviewIfNeeded(cachedPreview, targetWidth, targetHeight);
+    }
+
+    private static BufferedImage readSubsampledImage(File file, int targetWidth, int targetHeight) throws Exception {
+        try (ImageInputStream iis = ImageIO.createImageInputStream(file)) {
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+            if (!readers.hasNext()) {
+                return null;
+            }
+
+            ImageReader reader = readers.next();
+            try {
+                reader.setInput(iis, true);
+
+                int fullWidth = reader.getWidth(0);
+                int fullHeight = reader.getHeight(0);
+
+                int xStep = Math.max(1, fullWidth / targetWidth);
+                int yStep = Math.max(1, fullHeight / targetHeight);
+
+                ImageReadParam parameters = reader.getDefaultReadParam();
+                parameters.setSourceSubsampling(xStep, yStep, xStep / 2, yStep / 2); // read every n-th pixel
+
+                return reader.read(0, parameters);
+            } finally {
+                reader.dispose();
+            }
+        }
     }
 
     public static boolean isImageFile(File file) {

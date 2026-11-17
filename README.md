@@ -16,16 +16,20 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 ## Table of Contents
 1. [Features](#features)
 2. [Installation](#installation)
-    1. [Prebuilt Executable](#prebuilt-executable)
-    2. [Compiling from Source](#compiling-from-source)
+    1. [Installers (Recommended)](#installers-recommended)
+    2. [Portable Zip](#portable-zip)
+    3. [Compiling from Source](#compiling-from-source)
+    4. [Building an Installer](#building-an-installer)
 3. [How to Use](#how-to-use)
    1. [Open a Folder of Images](#1-open-a-folder-of-images)
    2. [Calibrate Grouping Settings](#2-calibrate-grouping-settings)
    3. [View Photos and Select Takes](#3-view-photos-and-select-takes)
    4. [Export Selected Takes](#4-export-selected-takes)
+   5. [Pick Up Where You Left Off](#5-pick-up-where-you-left-off)
 4. [Config](#config)
-   1. [Default Config](#default-config)
-   2. [Config Settings Explained](#config-settings-explained)
+   1. [Where Cullergrader Stores Its Files](#where-cullergrader-stores-its-files)
+   2. [Default Config](#default-config)
+   3. [Config Settings Explained](#config-settings-explained)
 5. [Performance Tuning](#performance-tuning)
 6. [Contributing](#contributing)
 7. [License](#license)
@@ -40,6 +44,7 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 - Runs on Windows, Mac, Linux, and anything else that supports Java GUIs
 - Blazingly-fast thanks to configurable multithreading support
 - Caches images -- future scans should be incredibly fast!
+- Saves your progress automatically -- close the app and pick up where you left off
 - Extra information about images available on hover
 - Runs completely offline, and never connects to the internet
 - Logs information to .txt files
@@ -56,10 +61,24 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
 
 ## Installation
 
-### Prebuilt Executable
-1. Cullergrader requires a Java 8 JRE or newer to run
-2. A prebuilt executable `.jar` with all libraries bundled is available for download at [GitHub Releases](https://github.com/PenguinPush/cullergrader/releases)
-3. Extract the `.zip` file to any folder and run `cullergrader-<version>.jar` file to begin using Cullergrader
+### Installers (Recommended)
+Download the installer for your system from [GitHub Releases](https://github.com/PenguinPush/cullergrader/releases). Java is bundled in, so there's nothing else to install.
+
+| System                | File                         |
+|-----------------------|------------------------------|
+| macOS (Apple Silicon) | `Cullergrader-<version>.dmg` |
+| Windows               | `Cullergrader-<version>.msi` |
+| Debian / Ubuntu       | `cullergrader_<version>.deb` |
+
+**Note**: the installers aren't code-signed yet, so your system may warn you the first time:
+- **macOS**: if it says the app "can't be opened", right-click `Cullergrader.app` in Applications and choose `Open`, or allow it under `System Settings > Privacy & Security`
+- **Windows**: if SmartScreen appears, click `More info > Run anyway`
+
+### Portable Zip
+For other systems (such as Intel Macs), or if you'd rather not install anything:
+1. Install a Java 8 JRE or newer
+2. Download `cullergrader-<version>.zip` from [GitHub Releases](https://github.com/PenguinPush/cullergrader/releases)
+3. Extract it to any folder and run `cullergrader-<version>.jar`
 
 **Note**:
 - If you want to view logs in console, please use `run.bat` or `run.sh` depending on your operating system
@@ -78,11 +97,20 @@ Cullergrader is named for being a tool that culls and grades* photos. Please not
     ```
     mvn clean install
     ```
-4. Extract the generated `cullergrader-version.zip` and run as described above
+4. Extract the generated `target/cullergrader-<version>.zip` and run as described in [Portable Zip](#portable-zip)
+
+### Building an Installer
+Native installers are built with `jpackage`, which needs JDK 17 or newer. After building from source:
+```bash
+bash packaging/build-installer.sh
+```
+This makes a `.dmg` on macOS, a `.msi` on Windows (requires the [WiX Toolset v3](https://github.com/wixtoolset/wix3/releases)), or a `.deb` on Linux, in `target/installer/`. You can also pass a type explicitly, e.g. `app-image`, `pkg`, `exe`, or `rpm`.
+
+Pushing a version tag (e.g. `v1.1.0`, matching `<version>` in `pom.xml`) builds all three installers on GitHub Actions and attaches them to a draft release.
 
 ## How to Use
 ### 1. Open a Folder of Images
-Folders can be opened from `File > Open Folder` or with `Ctrl + O`. The first time images are computed, it may take a few minutes (but often less) to hash the images, depending on image count and disk speed. Hashes are cached for future use in `hashes.json` (configurable via `CACHE_FILE`), so as long as this file stays intact, future computations of the same images will be nearly instant.
+Folders can be opened from `File > Open Folder` or with `Ctrl + O`. The first time images are computed, it may take a few minutes (but often less) to hash the images, depending on image count and disk speed. Hashes are cached for future use in `hashes.json` in Cullergrader's [data folder](#where-cullergrader-stores-its-files) (configurable via `CACHE_FILE`), so as long as this file stays intact, future computations of the same images will be nearly instant.
 
 ![images/open_folder.png](images/open_folder.png)
 
@@ -106,6 +134,12 @@ By clicking on a photo, users can access the `Photo Viewer`, bringing up all ind
 Selected takes can be exported to a folder using `File > Export Selected Takes` or with `Ctrl + S`. After choosing an export folder, all selected takes from each group will be copied to that folder. Groups with no selections will be skipped.
 
 ![images/export_to.png](images/export_to.png)
+
+### 5. Pick Up Where You Left Off
+Your progress is saved automatically every time you select or deselect a photo, or reload groups. When you open the same folder again, your selections and threshold settings are restored, even after closing Cullergrader.
+- Selections are remembered per photo, so they survive changing thresholds and hitting `Reload Groups`
+- Photos added to the folder since your last session get the default selection
+- Progress is stored in Cullergrader's [data folder](#where-cullergrader-stores-its-files), never in your photo folder. If you move or rename a photo folder, its progress starts fresh
 
 ## CLI Usage
 
@@ -161,7 +195,25 @@ java -jar cullergrader.jar -i ~/photos/vacation -o ~/photos/best --json ~/photos
 
 ## Config
 
-Configuration is **optional**. Cullergrader includes sensible defaults for all settings. To customize, create a `config.json` file in the same directory as the executable.
+Configuration is **optional**. Cullergrader includes sensible defaults for all settings. To customize, edit `config.json` in Cullergrader's data folder (it's created with the defaults the first time Cullergrader runs). If the file has a mistake in it, Cullergrader falls back to the defaults and prints a warning to the console.
+
+### Where Cullergrader Stores Its Files
+Cullergrader keeps its config, hash cache, logs, and saved progress in one folder per user:
+
+| System  | Location                                         |
+|---------|--------------------------------------------------|
+| macOS   | `~/Library/Application Support/Cullergrader`     |
+| Windows | `%APPDATA%\Cullergrader`                         |
+| Linux   | `~/.config/cullergrader` (or `$XDG_CONFIG_HOME`) |
+
+```
+config.json   your settings
+hashes.json   cached image hashes, safe to delete (they'll be recomputed)
+logs/         the 20 most recent log files
+sessions/     saved progress, one file per photo folder
+```
+
+To keep everything somewhere else (for example, a portable install on a USB drive), set the `CULLERGRADER_HOME` environment variable to the folder you want to use.
 
 ### Default Config
 ```json
@@ -175,9 +227,9 @@ Configuration is **optional**. Cullergrader includes sensible defaults for all s
     "MAX_THREADS_RATIO": 2,
     "HASHED_WIDTH": 8,
     "HASHED_HEIGHT": 8,
-    "TIME_THRESHOLD_SECONDS": 15,
-    "SIMILARITY_THRESHOLD_PERCENT": 45,
-    "DEFAULT_SELECTION_STRATEGY": "first"
+    "TIME_THRESHOLD_SECONDS": 5,
+    "SIMILARITY_THRESHOLD_PERCENT": 30,
+    "DEFAULT_SELECTION_STRATEGY": "first",
     "IMAGE_PREVIEW_CACHE_SIZE_MB": 2048
 }
 ```
@@ -186,8 +238,8 @@ Configuration is **optional**. Cullergrader includes sensible defaults for all s
 | Setting                        | Description                                                                                                                                                                                                                                | Variable Type |
 |--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
 | `DARK_THEME`                   | Toggles the dark and light FlatLaf themes. On by default (obviously)                                                                                                                                                                       | `boolean`     |
-| `CACHE_FILE`                   | The name of the *file* used to store hash caches. Passed as a pathname in a File constructor                                                                                                                                               | `String`      |
-| `LOG_DIRECTORY`                | The name of the *folder* used to store logs. Passed as a pathname in a File constructor                                                                                                                                                    | `String`      |
+| `CACHE_FILE`                   | The name of the *file* used to store hash caches. Relative paths are inside the data folder; absolute paths are used as-is                                                                                                                 | `String`      |
+| `LOG_DIRECTORY`                | The name of the *folder* used to store logs. Relative paths are inside the data folder; absolute paths are used as-is                                                                                                                      | `String`      |
 | `DEFAULT_FOLDER_PATH`          | The default folder opened when importing images. Passed as a pathname in a File constructor. When empty, uses the systems `user.home` property                                                                                             | `String`      |
 | `HASHING_ENABLED`              | Whether or not hashing is used in grouping photos                                                                                                                                                                                          | `boolean`     |
 | `EXECUTOR_TIMEOUT_MINUTES`     | The amount of time, in minutes, before the hash manager times out and stops hashing photos                                                                                                                                                 | `int`         |
@@ -198,10 +250,9 @@ Configuration is **optional**. Cullergrader includes sensible defaults for all s
 | `SIMILARITY_THRESHOLD_PERCENT` | The default similarity between two photo hashes before they're counted as a new group. Higher values means more lenience in image similarity (larger groups, less in number). Editable in-app, but will not change the default stored here | `float`       |
 | `DEFAULT_SELECTION_STRATEGY`   | The automatic selection strategy when creating groups. Options: `"first"` (select first photo), `"last"` (select last photo), `"first_and_last"` (select both), `"all"` (select all), `"none"` (no automatic selection)                   | `String`      |
 
-Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_TOGGLE_SELECTION`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended. 
 | `IMAGE_PREVIEW_CACHE_SIZE_MB`  | Maximum memory (in megabytes) to use for caching image previews. Default 2048 MB (2 GB). Increase for very large photo shoots (see Performance Tuning section)                                                                             | `int`         |
 
-Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_SET_BESTTAKE`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended.
+Note: More config options are technically functional, such as `PLACEHOLDER_THUMBNAIL_PATH`, `KEYBIND_TOGGLE_SELECTION`, or `GRIDMEDIA_LABEL_TEXT_COLOR`, but are not documented here and aren't editable by default due to their configurability not significantly impacting program function. Users are free to explore the source code and add these into `config.json` themselves, and they should work as intended.
 
 ## Performance Tuning
 

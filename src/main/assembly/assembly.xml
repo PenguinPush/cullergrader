@@ -15,13 +15,8 @@
         </dependencySet>
     </dependencySets>
     <fileSets>
-        <fileSet>
-            <directory>src/main/resources</directory>
-            <outputDirectory>/</outputDirectory>
-            <includes>
-                <include>*.*</include>
-            </includes>
-        </fileSet>
+        <!-- config.json and placeholder.jpg are bundled inside the jar; on first run the default
+             config is copied to the per-user data directory (see AppPaths) -->
         <fileSet>
             <directory>${project.build.outputDirectory}</directory>
             <outputDirectory>/</outputDirectory>

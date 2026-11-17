@@ -4,6 +4,7 @@ import com.penguinpush.cullergrader.media.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.penguinpush.cullergrader.config.AppConstants;
+import com.penguinpush.cullergrader.config.AppPaths;
 
 import static com.penguinpush.cullergrader.utils.Logger.logMessage;
 
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HashManager {
 
-    private static final File CACHE_FILE = new File(AppConstants.CACHE_FILE);
+    private static final File CACHE_FILE = AppPaths.resolve(AppConstants.CACHE_FILE);
     private final Map<String, HashEntry> cache = new HashMap<>();
 
     public HashManager() {

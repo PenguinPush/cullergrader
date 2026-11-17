@@ -98,6 +98,7 @@ public class PhotoGridFrame extends JFrame {
 
         if (photoGroup.getIndex() <= photoGroups.size() - 1) {
             photoGroup.toggleSelection(photo);
+            groupGridFrame.saveSession(); // autosave so progress survives closing the app
             groupGridFrame.setNeedsRefresh();
             jGridPanel.repaint(); // Repaint photo grid thumbnails
             groupGridFrame.repaint(); // Repaint group grid to update opacity

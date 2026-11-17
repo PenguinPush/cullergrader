@@ -80,6 +80,16 @@ public class GroupGridFrame extends JFrame {
         this.needsRefresh = true;
     }
 
+    /**
+     * Saves the current selections and thresholds for the open folder, so progress survives closing the app.
+     */
+    public void saveSession() {
+        if (importDirectory == null || photoGroups == null) {
+            return;
+        }
+        SessionManager.save(importDirectory, photoGroups, (float) jTimestampSpinner.getValue(), (float) jSimilaritySpinner.getValue());
+    }
+
     public static void setInfoText(String infoText) {
         instance.jInfoTextLabel.setText(infoText);
     }
@@ -294,7 +304,19 @@ public class GroupGridFrame extends JFrame {
             // Clear image preview cache when loading new directory (fresh start)
             PhotoUtils.clearImagePreviewCache();
 
+            // Resume where the user left off: restore the thresholds they last used for this folder
+            SessionManager.Session session = SessionManager.load(importDirectory);
+            if (session != null) {
+                if (session.getTimeThresholdSeconds() != null) {
+                    jTimestampSpinner.setValue(session.getTimeThresholdSeconds());
+                }
+                if (session.getSimilarityThresholdPercent() != null) {
+                    jSimilaritySpinner.setValue(session.getSimilarityThresholdPercent());
+                }
+            }
+
             List<PhotoGroup> groups = FileUtils.loadFolder(importDirectory, groupingEngine, (float) jTimestampSpinner.getValue(), (float) jSimilaritySpinner.getValue());
+            SessionManager.apply(session, groups);
             loadFrame(groups);
 
             SwingUtilities.invokeLater(() -> {
@@ -315,8 +337,14 @@ public class GroupGridFrame extends JFrame {
     private void jReloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jReloadButtonActionPerformed
         long startTime = System.currentTimeMillis();
 
+        // Save current picks first, so re-grouping with new thresholds keeps them instead of resetting to defaults
+        saveSession();
+        SessionManager.Session session = SessionManager.load(importDirectory);
+
         List<PhotoGroup> groups = FileUtils.loadFolder(importDirectory, groupingEngine, (float) jTimestampSpinner.getValue(), (float) jSimilaritySpinner.getValue());
+        SessionManager.apply(session, groups);
         loadFrame(groups);
+        saveSession(); // record the new thresholds
 
         // same case as above, not logged but all good
         long endTime = System.currentTimeMillis();

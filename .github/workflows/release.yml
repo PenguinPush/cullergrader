@@ -1,0 +1,90 @@
+# Builds native installers (with a bundled Java runtime) for macOS, Windows and Linux.
+#
+# - Push a tag like v1.1.0 to build everything and create a DRAFT GitHub release with the files attached.
+#   Review the draft on GitHub, then publish it yourself.
+# - Or run it manually from the Actions tab to just build the installers (downloadable as workflow artifacts).
+#
+# The tag must match <version> in pom.xml (tag v1.1.0 <-> version 1.1.0).
+name: Build installers
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  installer:
+    name: ${{ matrix.type }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest   # Apple Silicon
+            type: dmg
+          - os: windows-latest
+            type: msi
+          - os: ubuntu-latest
+            type: deb
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Install WiX Toolset v3 (jpackage needs it for .msi)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install wixtoolset -y --no-progress
+          Get-ChildItem "${env:ProgramFiles(x86)}" -Directory -Filter "WiX Toolset v3*" |
+            ForEach-Object { Add-Content $env:GITHUB_PATH "$($_.FullName)\bin" }
+
+      - name: Build jar and portable zip
+        run: mvn -B clean package
+
+      - name: Check tag matches pom.xml version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          if [ ! -f "target/cullergrader-${GITHUB_REF_NAME#v}.zip" ]; then
+            echo "Tag $GITHUB_REF_NAME doesn't match <version> in pom.xml" >&2
+            exit 1
+          fi
+
+      - name: Build installer
+        shell: bash
+        run: bash packaging/build-installer.sh ${{ matrix.type }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installer-${{ matrix.type }}
+          path: target/installer/*
+
+      # the cross-platform zip (needs Java installed) is the same on every OS, so only upload it once
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Linux'
+        with:
+          name: portable-zip
+          path: target/cullergrader-*.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: installer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: dist/*

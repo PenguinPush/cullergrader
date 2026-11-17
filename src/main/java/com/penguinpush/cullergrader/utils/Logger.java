@@ -1,6 +1,7 @@
 package com.penguinpush.cullergrader.utils;
 
 import com.penguinpush.cullergrader.config.AppConstants;
+import com.penguinpush.cullergrader.config.AppPaths;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,11 +9,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class Logger {
 
-    private static final String LOG_DIRECTORY = AppConstants.LOG_DIRECTORY;
+    private static final File LOG_DIRECTORY = AppPaths.resolve(AppConstants.LOG_DIRECTORY);
+    private static final int MAX_LOG_FILES = 20;
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private static String fileName = LocalDateTime.now().format(TIMESTAMP_FORMAT) + ".txt";
 
@@ -21,18 +24,35 @@ public class Logger {
 
     static {
         try {
-            File logDirectory = new File(LOG_DIRECTORY);
-
-            if (!logDirectory.exists()) {
-                logDirectory.mkdirs();
+            if (!LOG_DIRECTORY.exists()) {
+                LOG_DIRECTORY.mkdirs();
             }
 
-            logFile = new File(logDirectory, fileName);
+            pruneOldLogs();
+
+            logFile = new File(LOG_DIRECTORY, fileName);
 
             if (!logFile.exists()) {
                 logFile.createNewFile();
             }
         } catch (IOException e) {
+        }
+    }
+
+    /**
+     * Keeps only the newest log files, so the hidden data directory doesn't grow forever.
+     * Log names are timestamps, so sorting by name sorts by age.
+     */
+    private static void pruneOldLogs() {
+        File[] logs = LOG_DIRECTORY.listFiles((dir, name) -> name.endsWith(".txt"));
+        if (logs == null || logs.length < MAX_LOG_FILES) {
+            return;
+        }
+
+        Arrays.sort(logs);
+        // leave room for the log file this session is about to create
+        for (int i = 0; i <= logs.length - MAX_LOG_FILES; i++) {
+            logs[i].delete();
         }
     }
 

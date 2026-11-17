@@ -2,25 +2,52 @@ package com.penguinpush.cullergrader.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 
 import java.awt.Color;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public class AppConstants {
-    private static final DefaultAppConstants config;
+    private static final DefaultAppConstants config = loadConfig();
 
-    static {
-        DefaultAppConstants loaded = new DefaultAppConstants();
-        try {
+    private static DefaultAppConstants loadConfig() {
+        File configFile = AppPaths.getConfigFile();
+        copyDefaultConfigIfMissing(configFile);
+
+        try (Reader reader = new InputStreamReader(Files.newInputStream(configFile.toPath()), StandardCharsets.UTF_8)) {
             Gson gson = new GsonBuilder().create();
-            loaded = gson.fromJson(new FileReader("config.json"), DefaultAppConstants.class);
-            System.out.println("loaded config.json");
-
-        } catch (IOException e) {
-            System.err.println("couldn't load config, using default values");
+            DefaultAppConstants loaded = gson.fromJson(reader, DefaultAppConstants.class);
+            if (loaded != null) {
+                System.out.println("loaded config: " + configFile.getAbsolutePath());
+                return loaded;
+            }
+            System.err.println("config is empty, using default values: " + configFile.getAbsolutePath());
+        } catch (IOException | JsonParseException e) {
+            // a malformed config shouldn't stop the app from starting
+            System.err.println("couldn't load config, using default values: " + configFile.getAbsolutePath() + " (" + e.getMessage() + ")");
         }
-        config = loaded;
+        return new DefaultAppConstants();
+    }
+
+    private static void copyDefaultConfigIfMissing(File configFile) {
+        if (configFile.exists()) {
+            return;
+        }
+        // give first-time users an editable copy of the bundled default config
+        try (InputStream defaults = AppConstants.class.getResourceAsStream("/config.json")) {
+            if (defaults != null) {
+                Files.copy(defaults, configFile.toPath());
+                System.out.println("created default config: " + configFile.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            System.err.println("couldn't create default config: " + e.getMessage());
+        }
     }
 
     public static final boolean DARK_THEME = config.DARK_THEME;
